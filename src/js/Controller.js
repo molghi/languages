@@ -15,6 +15,7 @@ const Visual = new View();
 
 // runs on app start
 function init() {
+    Visual.greetScreen("greet");
     runEventListeners();
 }
 init();
@@ -22,7 +23,54 @@ init();
 // ================================================================================================
 
 // running event listeners
-function runEventListeners() {}
+function runEventListeners() {
+    Visual.handleHeaderClicks(headerHandler); // handle clicks in .header
+    Visual.handleAppClicks(appClicksHandler); // handle clicks in .app
+    Visual.handleAppHoversIn();
+    Visual.handleAppHoversOut();
+}
+
+// ================================================================================================
+
+function headerHandler(el) {
+    const type = el.textContent.trim().toLowerCase();
+    if (type === `add word`) {
+        // render Add Word form
+        Visual.removePrompt();
+        Visual.removeGreetScreen();
+        Visual.renderAddForm();
+        const languages = Logic.getLangsList("pure"); // getting the list of lang names and country flags
+        Visual.populateSelect(languages);
+    } else if (type === `practice`) {
+        // commence practice
+        Visual.removeAddForm();
+        Visual.removeGreetScreen();
+        Visual.renderPrompt(
+            "Select Mode",
+            ["From Saved", "From Online"],
+            [
+                `Create a practice session using the materials you've worked with before`,
+                `Create a new practice session with fresh content from an online source`,
+            ],
+            "Select Language >"
+        ); // titleString, optionsArr, optionsExplainers, btnText
+    }
+}
+
+// ================================================================================================
+
+function appClicksHandler(clickedEl, text) {
+    console.log(clickedEl, text);
+    if (text === `select language >`) {
+        // render another prompt: Select Language
+        const [selectedEl, selectedElText] = Visual.readSelectedOption();
+        const languages = Logic.getLangsList(); // getting the list of lang names and country flags
+        Visual.renderPrompt("Select Language", languages, [], "Begin Practice >");
+    }
+    if (text === `begin practice >`) {
+        console.log(`start the quiz`);
+    }
+}
 
 // ================================================================================================
 

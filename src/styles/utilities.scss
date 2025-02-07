@@ -1,0 +1,31 @@
+@use "./initial";
+
+.active {
+    background-color: var(--accent) !important;
+    color: var(--bg) !important;
+}
+
+.glowing {
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.no-hover {
+    pointer-events: none;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.moved-left {
+    transform: translateX(-50px);
+}

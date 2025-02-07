@@ -1,0 +1,61 @@
+@use "./initial";
+
+.form {
+    margin-top: 30px;
+    transition: all 0.2s;
+    &__form {
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+    }
+    &__title {
+        font-size: 32px;
+        background-color: var(--accent);
+        color: var(--bg);
+        text-shadow: 0 0 1px var(--bg);
+        display: inline-block;
+        padding: 0 10px;
+        max-width: 212px;
+    }
+    &__input-box {
+        width: 100%;
+        position: relative;
+
+        span {
+            position: absolute;
+            top: 13px;
+            left: -20px;
+            color: red;
+            text-shadow: 0 0 3px red;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            color: var(--white);
+            &:focus {
+                box-shadow: 0 0 10px var(--accent);
+            }
+        }
+    }
+    &__input {
+        width: 100%;
+        color: var(--white);
+        &:focus {
+            &::placeholder {
+                opacity: 0.5;
+            }
+        }
+    }
+    &__btn-box {
+    }
+    &__btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        transition: box-shadow 0.3s;
+        &:focus {
+            box-shadow: inset 0 0 15px var(--accent);
+        }
+    }
+}

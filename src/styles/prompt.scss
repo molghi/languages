@@ -1,0 +1,58 @@
+@use "./initial";
+
+.prompt {
+    margin-top: 30px;
+    transition: all 0.2s;
+
+    &__title {
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    &__box {
+        display: flex;
+        flex-direction: column;
+        row-gap: 30px;
+    }
+    &__option {
+        &--option {
+        }
+        &--action {
+            flex: 1 1 100%;
+            text-align: right;
+            margin-top: 50px;
+        }
+        &--explainer {
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
+        }
+        &-content {
+            white-space: nowrap;
+        }
+        &-content,
+        &-action-content {
+            cursor: pointer;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 20px;
+            padding: 10px 15px;
+            display: inline-block;
+            &:hover {
+                background-color: var(--accent);
+                color: var(--bg);
+                box-shadow: 0 0 10px var(--accent);
+            }
+            &:active {
+                opacity: 0.7;
+            }
+        }
+        &--choice {
+            display: flex;
+            align-items: center;
+            column-gap: 20px;
+            row-gap: 10px;
+            flex-wrap: wrap;
+        }
+    }
+}

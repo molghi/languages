@@ -1,2 +1,6 @@
 @use "./initial"; // styles reset and general things for the proj
+@use "./header";
+@use "./form";
+@use "./prompt";
 @use "./other";
+@use "./utilities";

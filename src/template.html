@@ -9,10 +9,22 @@
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
         <title><%= htmlWebpackPlugin.options.title %></title>
     </head>
-    <body>
+    <body style="background-color: #000">
         <div class="section">
             <div class="container">
-                <h1><%= htmlWebpackPlugin.options.title %></h1>
+                <div class="header">
+                    <div class="header__column"><h1><%= htmlWebpackPlugin.options.title %></h1></div>
+                    <div class="header__column">
+                        <button class="header__btn">Add Word</button>
+                        <button class="header__btn">Practice</button>
+                    </div>
+                </div>
+
+                <div class="app"></div>
+
+                <div class="footer">
+                    <div class="footer__column">Last Practiced: <span>2 days ago</span></div>
+                </div>
             </div>
         </div>
     </body>
