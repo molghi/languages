@@ -29,14 +29,22 @@ import {
     topicBasicPhrases,
 } from "./model-dependencies/dataMyLists.js"; // already clean, what's imported
 import { fetchLangs, fetchTranslation, fetchExamplePhrase } from "./model-dependencies/api.js";
+import LS from "./model-dependencies/localStorage.js";
 
 // ================================================================================================
 
 class Model {
-    #state = {};
+    #state = {
+        words: [],
+        currentQuizData: "",
+        currentQuizAnswers: [],
+        roundCounter: 0,
+        roundsNumber: 0,
+    };
 
     constructor() {
-        this.sortData();
+        this.fetchWordsLS(); // fetching from LS
+        // this.sortData();
         // this.getPopularLangCodes();
         // fetchTranslation();
         // fetchExamplePhrase();
@@ -176,6 +184,116 @@ class Model {
             "<span data-lang='ta'><span class='lang-flag'>🇵🇭</span> <span class='lang-name'>Tagalog</span></span>",
         ];
     }
+
+    // ================================================================================================
+
+    validateInput(dataObj) {
+        //
+    }
+
+    // ================================================================================================
+
+    addWord(dataObj) {
+        this.#state.words.push(dataObj); // pushing to state
+        LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+    }
+
+    fetchWordsLS() {
+        const fetched = LS.get(`languagesWords`, "ref"); // key, type = "primitive"
+        if (!fetched) return;
+        fetched.forEach((wordObj) => this.#state.words.push(wordObj));
+    }
+
+    getWordsState = () => this.#state.words;
+
+    // ================================================================================================
+
+    getAddedLangs() {
+        const stateWords = this.#state.words;
+        const langs = stateWords.map((wordObj) => wordObj.language.toLowerCase());
+        return [...new Set(langs)]; // returning it cleaned from duplicates
+    }
+
+    // ================================================================================================
+
+    // returns an array of indexes randomly shuffled
+    shuffleArray(numberOfElements) {
+        const result = [];
+        // const arr = new Array(numberOfElements).fill(0).map((x, i) => i);
+        while (result.length < numberOfElements) {
+            const randomNum = Math.floor(Math.random() * numberOfElements); // between 0 and numberOfElements excl. last
+            if (!result.includes(randomNum)) result.push(randomNum);
+        }
+        return result;
+    }
+
+    // ================================================================================================
+
+    getRandomNum(upperLimit) {
+        const randomNum = Math.floor(Math.random() * upperLimit); // between 0 and upperLimit excl. last
+        return randomNum;
+    }
+
+    // ================================================================================================
+
+    // returns the array of 10 elements: indeces from 0 to upperLimit excl. last
+    getRandomTen(upperLimit) {
+        const arr = [];
+        while (arr.length < 10) {
+            const randomNum = this.getRandomNum(upperLimit);
+            if (!arr.includes(randomNum)) arr.push(randomNum);
+        }
+        return arr;
+    }
+
+    // ================================================================================================
+
+    // get 10 or less words from state, filtered by this language -- random words? random if more than 10
+    getQuizWords(language) {
+        const languageWords = this.#state.words.filter((wordObj) => wordObj.language === language);
+        if (languageWords.length < 11) {
+            // returned shuffled
+            const shuffledIndeces = this.shuffleArray(languageWords.length);
+            const arr = [];
+            languageWords.forEach((wordObj, i) => arr.push(languageWords[shuffledIndeces[i]]));
+            return arr;
+        } else {
+            // return random 10
+            const random10Indeces = this.getRandomTen(languageWords.length);
+            const arr = [];
+            random10Indeces.forEach((randomIndex) => arr.push(languageWords[randomIndex]));
+            return arr;
+        }
+    }
+
+    // ================================================================================================
+
+    setQuizWords(dataArr) {
+        this.#state.currentQuizData = dataArr;
+    }
+
+    getThisQuizData = () => this.#state.currentQuizData;
+
+    // ================================================================================================
+
+    incrementRoundCounter = () => (this.#state.roundCounter += 1);
+
+    getRoundCounter = () => this.#state.roundCounter;
+
+    resetRoundCounter = () => (this.#state.roundCounter = 0);
+
+    // ================================================================================================
+
+    getRoundsNumber = () => this.#state.roundsNumber;
+    setRoundsNumber = (value) => (this.#state.roundsNumber = value);
+
+    // ================================================================================================
+
+    pushAnswer(string) {
+        this.#state.currentQuizAnswers.push(string.trim());
+    }
+
+    getAnswers = () => this.#state.currentQuizAnswers;
 
     // ================================================================================================
 }

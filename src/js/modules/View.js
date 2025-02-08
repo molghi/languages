@@ -1,7 +1,22 @@
 // View is responsible for everything that happens on the screen: rendering and all visual interactions with any elements
 
-import { renderAddForm, renderPrompt, greetScreen } from "./view-dependencies/renderMethods.js";
-import { handleHeaderClicks, handleAppClicks, handleAppHoversIn, handleAppHoversOut } from "./view-dependencies/eventHandlers.js";
+import {
+    renderAddForm,
+    renderPrompt,
+    showScreen,
+    renderMessage,
+    renderRound,
+    renderEndScreen,
+} from "./view-dependencies/renderMethods.js";
+import {
+    handleHeaderClicks,
+    handleAppClicks,
+    handleAppHoversIn,
+    handleAppHoversOut,
+    handleFormSubmission,
+} from "./view-dependencies/eventHandlers.js";
+import { someFrequentNouns } from "./model-dependencies/dataMyLists.js";
+import listenKeyPresses from "./view-dependencies/keyCommands.js";
 
 class View {
     constructor() {
@@ -11,12 +26,12 @@ class View {
         this.containerEl = document.querySelector(".container");
 
         this.langsInfo = {
-            en: `<span>Speakers:</span> Approximately 1.5 billion.\n<span>Countries:</span> United States, United Kingdom, Canada.\n<span>Family:</span> Indo-European, Germanic.\n<span>Note:</span> Emerged as a global lingua franca during the British Empire's expansion and solidified by the United States' cultural and economic influence in the 20th century. Evolved from Old English, influenced by Norman French and Latin.`,
+            en: `<span>Speakers:</span> Approximately 1.5 billion.\n<span>Countries:</span> United States, United Kingdom, Canada, Australia.\n<span>Family:</span> Indo-European, Germanic.\n<span>Note:</span> Emerged as a global lingua franca during the British Empire's expansion and solidified by the United States' cultural and economic influence in the 20th century. Evolved from Old English, influenced by Norman French and Latin.`,
             zh: `<span>Speakers:</span> Around 1.1 billion.\n<span>Countries:</span> China, Taiwan, Singapore.\n<span>Family:</span> Sino-Tibetan.\n<span>Note:</span> Standardized as the official language of China in the early 20th century, facilitating communication across diverse dialects. Mandarin is the official language of China and has numerous regional dialects.`,
             hi: `<span>Speakers:</span> Approximately 609.5 million.\n <span>Countries:</span> India, Nepal, Fiji.\n <span>Family:</span> Indo-European, Indo-Aryan.\n <span>Note:</span> Evolved from Sanskrit and Prakrit languages; standardized in the 19th century and adopted as one of India's official languages post-independence. Written in the Devanagari script.`,
             es: `<span>Speakers:</span> About 559.1 million.\n<span>Countries:</span> Spain, Mexico, Colombia.\n<span>Family:</span> Indo-European, Romance.\n<span>Note:</span> Evolved from Latin and spread globally during the Spanish Empire. Spread globally during the 15th to 17th centuries through Spanish colonization, becoming the primary language in much of Latin America.`,
-            fr: `<span>Speakers:</span> Approximately 274 million.\n<span>Countries:</span> France, Belgium, Democratic Republic of the Congo, Canada.\n<span>Family:</span> Indo-European, Romance.\n<span>Note:</span> Originated from Latin. Served as the diplomatic and cultural lingua franca in Europe during the 17th to 19th centuries, influencing international relations and arts. Considered relatively conservative among Romance languages.`,
-            ar: `<span>Speakers:</span> Around 274 million.\n <span>Countries:</span> Egypt, Saudi Arabia, Algeria, Palestine, Syria.\n <span>Family:</span> Afro-Asiatic, Semitic.\n <span>Note:</span> Unified as a literary language through the Quran in the 7th century, facilitating its spread across the Middle East and North Africa. Classical Arabic (Fus'ha), the language of the Quran, evolved into Modern Standard Arabic, which is used in media and formal settings.`,
+            fr: `<span>Speakers:</span> Approximately 274 million.\n<span>Countries:</span> France, Belgium, Switzerland, Democratic Republic of the Congo, Canada.\n<span>Family:</span> Indo-European, Romance.\n<span>Note:</span> Originated from Latin. Served as the diplomatic and cultural lingua franca in Europe during the 17th to 19th centuries, influencing international relations and arts. Considered relatively conservative among Romance languages.`,
+            ar: `<span>Speakers:</span> Around 274 million.\n <span>Countries:</span> Egypt, Saudi Arabia, Morocco, Palestine, Syria.\n <span>Family:</span> Afro-Asiatic, Semitic.\n <span>Note:</span> Unified as a literary language through the Quran in the 7th century, facilitating its spread across the Middle East and North Africa. Classical Arabic (Fus'ha), the language of the Quran, evolved into Modern Standard Arabic, which is used in media and formal settings.`,
             be: `<span>Speakers:</span> Approximately 273 million.\n <span>Countries:</span> Bangladesh, India.\n <span>Family:</span> Indo-European, Indo-Aryan.\n <span>Note:</span> Evolved from Magadhi Prakrit; gained prominence during the Bengal Renaissance in the 19th century, enriching literature and arts. Known for its rich literary heritage, including works by famous Rabindranath Tagore.`,
             pt: `<span>Speakers:</span> About 258 million.\n <span>Countries:</span> Brazil, Portugal, Mozambique.\n <span>Family:</span> Indo-European, Romance.\n <span>Note:</span> Expanded globally during the Age of Discoveries in the 15th and 16th centuries, establishing its presence in South America, Africa, and Asia.`,
             ru: `<span>Speakers:</span> Approximately 258 million.\n <span>Countries:</span> Russia, Belarus, Kazakhstan.\n <span>Family:</span> Indo-European, Slavic.\n <span>Note:</span> Standardized in the 18th century under Peter the Great, served as a lingua franca of both the Russian Empire and the Soviet Union. Uses the Cyrillic script. Influenced by Old Church Slavonic, Greek, French and German.`,
@@ -101,8 +116,8 @@ class View {
 
     // ================================================================================================
 
-    greetScreen(type) {
-        greetScreen(type);
+    showScreen(type) {
+        showScreen(type);
     }
 
     // ================================================================================================
@@ -117,7 +132,7 @@ class View {
     readSelectedOption() {
         const allOptions = [...document.querySelectorAll(".prompt__option-content")];
         const selectedEl = allOptions.find((el) => el.classList.contains("active"));
-        const selectedElText = selectedEl.textContent.trim();
+        const selectedElText = selectedEl?.textContent.trim();
         return [selectedEl, selectedElText];
     }
 
@@ -147,6 +162,65 @@ class View {
         html.unshift('<option value="" selected disabled>Select Language</option>');
         select.innerHTML = html.join("");
     }
+
+    // ================================================================================================
+
+    handleFormSubmission(handler) {
+        handleFormSubmission(handler);
+    }
+
+    // ================================================================================================
+
+    showMessage(type, text) {
+        renderMessage(type, text);
+    }
+
+    // ================================================================================================
+
+    removeMessage() {
+        if (document.querySelector(".message")) document.querySelector(".message").remove();
+    }
+
+    // ================================================================================================
+
+    clearFormFields() {
+        const formElsArr = [...document.querySelector("form").elements];
+        formElsArr.forEach((el) => {
+            if (el.tagName !== "SELECT") el.value = ""; // clear all but select
+        });
+    }
+
+    // ================================================================================================
+
+    renderRound(wordObj, rounds, currentRound, isLastRound) {
+        renderRound(wordObj, rounds, currentRound, isLastRound);
+    }
+
+    // ================================================================================================
+
+    removeRound() {
+        if (document.querySelector(".round")) document.querySelector(".round").remove();
+    }
+
+    // ================================================================================================
+
+    removeEndScreen() {
+        if (document.querySelector(".after")) document.querySelector(".after").remove();
+    }
+
+    // ================================================================================================
+
+    renderEndScreen(currentQuizData, answers) {
+        renderEndScreen(currentQuizData, answers);
+    }
+
+    // ================================================================================================
+
+    listenKeyPresses(handler) {
+        listenKeyPresses(handler);
+    }
+
+    // ================================================================================================
 }
 
 export default View;

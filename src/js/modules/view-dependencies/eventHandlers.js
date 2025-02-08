@@ -12,6 +12,13 @@ function handleHeaderClicks(handler) {
             Visual.makeActive(clickedBtn, `.header__btn`);
             handler(clickedBtn);
         }
+
+        if (e.target.closest("h1")) {
+            // it was a click on h1
+            [...document.querySelectorAll(".header__btn")].forEach((btn) => btn.classList.remove("active"));
+            Visual.appBlock.innerHTML = ``;
+            Visual.showScreen("advise");
+        }
     });
 }
 
@@ -31,6 +38,34 @@ function handleAppClicks(handler) {
             const clickedBtn = e.target.closest(".prompt__option-action-content");
             const text = clickedBtn.textContent.toLowerCase().trim();
             handler(clickedBtn, text);
+        }
+
+        if (e.target.closest(".form__btn")) {
+            // it was a click on Add btn when adding a word
+            handler("add");
+        }
+
+        if (e.target.closest(".round__action-btn")) {
+            // it was a click on Next Round or Finish Session
+            const btnText = e.target.closest(".round__action-btn").textContent.trim().toLowerCase();
+            handler(btnText);
+        }
+
+        if (e.target.closest(".after__item-btn")) {
+            // it was a click on Wrong, Hard, Good or Easy btns in .after
+            const clickedEl = e.target.closest(".after__item-btn");
+            handler("rate", clickedEl);
+        }
+
+        if (e.target.closest(".after__action-btn")) {
+            // it was a click on Submit in .after
+            handler("submit");
+        }
+
+        if (e.target.closest(".greet-screen__btn")) {
+            // it was a click on Yes or No after submitting .after
+            const clickedElText = e.target.closest(".greet-screen__btn").textContent.trim().toLowerCase();
+            handler(`another ${clickedElText}`);
         }
     });
 }
@@ -59,4 +94,13 @@ function handleAppHoversOut(handler) {
 
 // ================================================================================================
 
-export { handleHeaderClicks, handleAppClicks, handleAppHoversIn, handleAppHoversOut };
+function handleFormSubmission(handler) {
+    document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        handler([...this.elements]);
+    });
+}
+
+// ================================================================================================
+
+export { handleHeaderClicks, handleAppClicks, handleAppHoversIn, handleAppHoversOut, handleFormSubmission };

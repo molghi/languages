@@ -1,0 +1,142 @@
+@use "./initial";
+
+.after {
+    transition: all 0.5s;
+    &__title {
+        // margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    &__sub-title {
+        margin-bottom: 30px;
+        line-height: 1.5;
+        padding-left: 10px;
+    }
+    &__items {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+    }
+    &__item {
+        position: relative;
+        background-color: #111;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        // border: 1px solid transparent;
+        transition: box-shadow 0.3s;
+        &:hover {
+            background-color: #161616;
+            box-shadow: 0 0 10px #555;
+            // border-color: #333;
+        }
+    }
+    &__item-number {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -60px;
+        font-weight: bold;
+        font-size: 40px;
+        color: rgba(white, 0.2);
+    }
+    &__item-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 10px;
+        &--correct {
+            color: limegreen;
+        }
+        &--your {
+        }
+    }
+    &__item-row-title {
+        // opacity: 0.5;
+        // color: rgba(white, 0.5);
+        color: #ccc;
+    }
+    &__item-row-value {
+        span {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--bg);
+            padding: 0 3px;
+            font-weight: bold;
+        }
+    }
+    &__item-row-sub-title {
+        display: inline-block;
+        // margin-top: 5px;
+        // flex: 1 1 100%;
+        font-size: 13px;
+        opacity: 0.2;
+        font-style: italic;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    &__item-btn-box {
+        flex: 1 1 100%;
+        margin-top: 10px;
+    }
+    &__item-btn {
+        padding: 10px 15px;
+        transition: box-shadow 0.3s;
+    }
+    &__item-btn--wrong {
+        color: red;
+        border-color: red;
+        &:hover {
+            background-color: red;
+            box-shadow: 0 0 10px red;
+        }
+        &.active {
+            box-shadow: 0 0 10px red;
+            background-color: red !important;
+        }
+    }
+    &__item-btn--hard {
+        color: coral;
+        border-color: coral;
+        &:hover {
+            background-color: coral;
+            box-shadow: 0 0 10px coral;
+        }
+        &.active {
+            box-shadow: 0 0 10px coral;
+            background-color: coral !important;
+        }
+    }
+    &__item-btn--good {
+        color: limegreen;
+        border-color: limegreen;
+        &:hover {
+            background-color: limegreen;
+            box-shadow: 0 0 10px limegreen;
+        }
+        &.active {
+            box-shadow: 0 0 10px limegreen;
+            background-color: limegreen !important;
+        }
+    }
+    &__item-btn--easy {
+        color: dodgerblue;
+        border-color: dodgerblue;
+        &:hover {
+            background-color: dodgerblue;
+            box-shadow: 0 0 10px dodgerblue;
+        }
+        &.active {
+            box-shadow: 0 0 10px dodgerblue;
+            background-color: dodgerblue !important;
+        }
+    }
+    &__action-btn-box {
+        text-align: right;
+        button {
+            padding: 10px 15px;
+            transition: box-shadow 0.3s;
+        }
+    }
+}

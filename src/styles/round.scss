@@ -1,0 +1,39 @@
+@use "./initial";
+
+.round {
+    transition: all 0.5s;
+    margin-top: 50px;
+    text-align: center;
+
+    &__total-progress {
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    &__total-progress-bar {
+        display: block;
+        height: 5px;
+        background-color: var(--accent);
+        margin-bottom: 10px;
+    }
+    &__title {
+        font-size: 30px;
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+    &__word {
+        display: inline-block;
+        margin-bottom: 40px;
+    }
+    &__input {
+        margin-bottom: 50px;
+        input {
+            width: 500px;
+        }
+    }
+    &__action-btn-box {
+        text-align: right;
+    }
+    &__action-btn {
+        transition: box-shadow 0.3s;
+    }
+}

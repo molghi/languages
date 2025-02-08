@@ -22,20 +22,20 @@ function renderAddForm() {
                         </div>
                         <div class="form__input-box">
                             <span>*</span>
-                            <input type="text" class="form__input" placeholder="Word (target language)" required />
+                            <input autocomplete="off" name="word" type="text" class="form__input" placeholder="Word (target language)" required />
                         </div>
                         <div class="form__input-box">
                             <span>*</span>
-                            <input type="text" class="form__input" placeholder="Translation" required />
+                            <input autocomplete="off" name="translation" type="text" class="form__input" placeholder="Translation" required />
                         </div>
                         <div class="form__input-box">
-                            <input type="text" class="form__input" placeholder="Pronunciation / Transliteration (optional)" />
+                            <input autocomplete="off" name="pronunciation" type="text" class="form__input" placeholder="Pronunciation / Transliteration (optional)" />
                         </div>
                         <div class="form__input-box">
-                            <input type="text" class="form__input" placeholder="Definition (optional)" />
+                            <input autocomplete="off" name="definition" type="text" class="form__input" placeholder="Definition (optional)" />
                         </div>
                         <div class="form__input-box">
-                            <input type="text" class="form__input" placeholder="Example sentence (optional)" />
+                            <input autocomplete="off" name="example" type="text" class="form__input" placeholder="Example sentence (optional)" />
                         </div>
                         <div class="form__btn-box">
                             <button class="form__btn">Add</button>
@@ -67,7 +67,8 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
         })
         .join("");
 
-    let viewClass = optionsArr.length > 4 ? " many" : "";
+    let viewClass = optionsArr.length > 1 ? " many" : ""; // if there are more than 4 elements, they will be flexed -- less, won't
+    if (optionsArr.includes("From Saved")) viewClass = ""; // do not apply the language rendering styles if it's not languages that this prompt is rendering
 
     const html = `<div class="prompt__title app-title">${titleString}</div>
                     <div class="prompt__box${viewClass}">
@@ -85,7 +86,7 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
 
 // ================================================================================================
 
-function greetScreen(type) {
+function showScreen(type) {
     const chooseRandom = (arr) => Math.floor(Math.random() * arr.length); // returns random index of 'arr'
 
     Visual.removeGreetScreen(); // removing before rendering (if exists)
@@ -113,6 +114,12 @@ function greetScreen(type) {
         ];
         const choice = chooseRandom(options);
         html = options[choice];
+    } else if (type === "uponSubmit") {
+        html = `<div class="greet-screen__title app-title">Submitted! Another one?</div>
+        <div class="greet-screen__btns">
+            <button class="greet-screen__btn">Yes</button>
+            <button class="greet-screen__btn">No</button>
+        </div>`;
     }
 
     div.innerHTML = html;
@@ -136,7 +143,6 @@ function renderQuickPopup(lang, hoveredItem) {
 
     div.innerHTML = `<div class="lang-info__title">Quick Info</div>` + data.replaceAll("\n", "<br>");
 
-    // el.appendChild(div);
     Visual.containerEl.appendChild(div);
 
     setTimeout(() => {
@@ -146,4 +152,118 @@ function renderQuickPopup(lang, hoveredItem) {
 
 // ================================================================================================
 
-export { renderAddForm, renderPrompt, greetScreen, renderQuickPopup };
+function renderMessage(type, text) {
+    Visual.removeMessage();
+    const div = document.createElement("div");
+    const classType = type === "success" ? "success" : type === "error" ? "error" : "notification";
+    div.classList.add("message", "invisible", "moved-left", classType);
+
+    div.innerHTML = `<div class="message__text">${text}</div>`;
+    Visual.containerEl.appendChild(div);
+
+    setTimeout(() => {
+        div.classList.remove("invisible", "moved-left"); // rendering with some animation
+    }, 200);
+
+    setTimeout(() => {
+        Visual.removeMessage();
+    }, 5000);
+}
+
+// ================================================================================================
+
+function renderRound(wordObj, rounds, currentRound, isLastRound) {
+    console.log(wordObj, rounds, currentRound, isLastRound);
+    Visual.removeRound(); // removing before rendering (if exists)
+    const div = document.createElement("div");
+    div.classList.add("round", "invisible");
+
+    const btnText = !isLastRound ? "Next round >" : "Finish session >";
+    div.innerHTML = `<div class="round__total-progress">
+                            <span class="round__total-progress-bar" style="width: ${
+                                ((currentRound + 1) / rounds) * 100
+                            }%;"></span>
+                            <span>Round:</span>
+                            <span>
+                                <span>${currentRound + 1}</span><span>/${rounds}</span>
+                            </span>
+                        </div>
+                        <div class="round__title">Do you remember what this word means?</div>
+                        <div class="round__word app-title">${wordObj.word}</div>
+                        <div class="round__input"><input type="text" placeholder="Type your answer..." /></div>
+                        <div class="round__action-btn-box">
+                            <button class="round__action-btn">${btnText}</button>
+                        </div>`;
+
+    Visual.appBlock.appendChild(div);
+
+    setTimeout(() => {
+        div.classList.remove("invisible"); // rendering with some animation
+    }, 200);
+
+    setTimeout(() => {
+        document.querySelector("input").focus(); // focusing input
+    }, 500);
+}
+
+// ================================================================================================
+
+function renderEndScreen(currentQuizData, answersArr) {
+    console.log(currentQuizData);
+    console.log(answersArr);
+    Visual.removeEndScreen(); // removing before rendering (if exists)
+    const div = document.createElement("div");
+    div.classList.add("after", "invisible");
+
+    const itemsHtml = answersArr.map((answer, i) => {
+        return `<li class="after__item" data-id="${currentQuizData[i].added}">
+                    <div class="after__item-number">${i + 1}</div>
+                    <div class="after__item-row">
+                        <div class="after__item-row-title">Question:</div>
+                        <div class="after__item-row-value">Do you remember what this word means? — <span>${
+                            currentQuizData[i].word
+                        }</span></div>
+                    </div>
+                    <div class="after__item-row after__item-row--your">
+                        <div class="after__item-row-title">Your Answer:</div>
+                        <div class="after__item-row-value">${answer}</div>
+                    </div>
+                    <div class="after__item-row after__item-row--correct">
+                        <div class="after__item-row-title">Correct Answer:</div>
+                        <div class="after__item-row-value">${currentQuizData[i].translation}</div>
+                    </div>
+                    <div class="after__item-row">
+                        <div class="after__item-row-title">Rate Your Knowledge:</div>
+                        <div class="after__item-row-sub-title">Hover over a button to see its meaning</div>
+                        <div class="after__item-btn-box">
+                            <button title="You failed to recall the card." class="after__item-btn after__item-btn--wrong">Wrong</button>
+                            <button title="You struggled but got it right." class="after__item-btn after__item-btn--hard">Hard</button>
+                            <button title="You recalled it correctly with little effort." class="after__item-btn after__item-btn--good">Good</button>
+                            <button title="You recalled it effortlessly" class="after__item-btn after__item-btn--easy">Easy</button>
+                        </div>
+                    </div>
+                </li>`;
+    });
+
+    div.innerHTML = `<div class="after__title app-title">Review Your Responses</div>
+                        <div class="after__sub-title">
+                            ▶︎ Rate your knowledge for each of these questions – this is required for the app to tailor your
+                            learning experience.
+                        </div>
+                        <ol class="after__items">
+                        ${itemsHtml.join("")}
+                            <div class="after__action-btn-box">
+                                <button class="after__action-btn">Submit</button>
+                            </div>
+                        </ol>`;
+
+    Visual.appBlock.appendChild(div);
+
+    setTimeout(() => {
+        div.classList.remove("invisible"); // rendering with some animation
+    }, 200);
+}
+
+// ================================================================================================
+
+export { renderAddForm, renderPrompt, showScreen, renderQuickPopup, renderMessage, renderRound, renderEndScreen };

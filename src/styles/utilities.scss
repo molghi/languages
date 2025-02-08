@@ -29,3 +29,10 @@
 .moved-left {
     transform: translateX(-50px);
 }
+
+.flexed {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 40px;
+}

@@ -11,11 +11,14 @@ import View from "./modules/View.js";
 const Logic = new Model();
 const Visual = new View();
 
+// importing dependencies:
+import appClicksHandler from "./modules/controller-dependencies/appClicksHandler.js";
+
 // ================================================================================================
 
 // runs on app start
 function init() {
-    Visual.greetScreen("greet");
+    Visual.showScreen("greet");
     runEventListeners();
 }
 init();
@@ -28,6 +31,7 @@ function runEventListeners() {
     Visual.handleAppClicks(appClicksHandler); // handle clicks in .app
     Visual.handleAppHoversIn();
     Visual.handleAppHoversOut();
+    Visual.listenKeyPresses(keyPressHandler);
 }
 
 // ================================================================================================
@@ -39,6 +43,7 @@ function headerHandler(el) {
         Visual.removePrompt();
         Visual.removeGreetScreen();
         Visual.renderAddForm();
+        Visual.handleFormSubmission(formHandler);
         const languages = Logic.getLangsList("pure"); // getting the list of lang names and country flags
         Visual.populateSelect(languages);
     } else if (type === `practice`) {
@@ -59,16 +64,28 @@ function headerHandler(el) {
 
 // ================================================================================================
 
-function appClicksHandler(clickedEl, text) {
-    console.log(clickedEl, text);
-    if (text === `select language >`) {
-        // render another prompt: Select Language
-        const [selectedEl, selectedElText] = Visual.readSelectedOption();
-        const languages = Logic.getLangsList(); // getting the list of lang names and country flags
-        Visual.renderPrompt("Select Language", languages, [], "Begin Practice >");
-    }
-    if (text === `begin practice >`) {
-        console.log(`start the quiz`);
+function formHandler(data) {
+    const formData = {};
+    const elements = data.filter((el) => el.tagName !== "BUTTON"); // getting all form elements without button
+    elements.forEach((el) => {
+        if (el.name === "languages") formData["language"] = el.value.trim();
+        else formData[el.name] = el.value.trim(); // populating formData
+    });
+    formData.added = new Date().toISOString();
+    // validation?
+    Logic.addWord(formData); // add to state and LS
+    Visual.showMessage("success", "Added successfully!"); // show message
+    Visual.clearFormFields(); // clear field
+    document.querySelector('form input[type="text"]').focus(); // focus first input
+}
+
+// ================================================================================================
+
+function keyPressHandler(keyPressed) {
+    if (keyPressed === "enter") {
+        // click "Next Round"
+        const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase();
+        appClicksHandler(btnText);
     }
 }
 

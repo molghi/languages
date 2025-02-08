@@ -33,4 +33,8 @@
 
 h1 {
     font-size: 28px;
+    cursor: pointer;
+    &:active {
+        opacity: 0.5;
+    }
 }
