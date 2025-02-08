@@ -48,6 +48,7 @@ class Model {
         // this.getPopularLangCodes();
         // fetchTranslation();
         // fetchExamplePhrase();
+        this.getNextRevisionDate();
     }
 
     // ================================================================================================
@@ -256,14 +257,60 @@ class Model {
             const shuffledIndeces = this.shuffleArray(languageWords.length);
             const arr = [];
             languageWords.forEach((wordObj, i) => arr.push(languageWords[shuffledIndeces[i]]));
-            return arr;
+            // now 'arr' contains shuffled data but it must also return those items whose revision time is either now or in the past, or doesn't exist at all
+            // so filtering again...
+            const result = arr.filter((wordObj) => {
+                if (!wordObj.hasOwnProperty("nextRevisionDateTime")) return wordObj; // if it has no 'next revision' prop, return it to practice now
+                const timeNow = new Date().getTime();
+                if (wordObj.nextRevisionDateTime <= timeNow) return wordObj; // if its revision time is either now or in the past, return it to practice now
+            });
+            return result;
         } else {
             // return random 10
             const random10Indeces = this.getRandomTen(languageWords.length);
             const arr = [];
             random10Indeces.forEach((randomIndex) => arr.push(languageWords[randomIndex]));
-            return arr;
+            // now 'arr' contains randomised data but it must also return those items whose revision time is either now or in the past, or doesn't exist at all
+            // so filtering again...
+            const result = arr.filter((wordObj) => {
+                if (!wordObj.hasOwnProperty("nextRevisionDateTime")) return wordObj; // if it has no 'next revision' prop, return it to practice now
+                const timeNow = new Date().getTime();
+                if (wordObj.nextRevisionDateTime <= timeNow) return wordObj; // if its revision time is either now or in the past, return it to practice now
+            });
+            return result;
         }
+    }
+
+    // ================================================================================================
+
+    // returns a string formatted like: "15/2/2025 at 15:35 (in 2 days and 9 hours)"
+    getNextRevisionDate() {
+        const withRevision = this.#state.words.filter((wordObj) => wordObj.nextRevisionDateTime);
+        const revisions = withRevision.map((wordObj) => wordObj.nextRevisionDateTime).sort((a, b) => a - b);
+        const soonest = revisions[0];
+        const datetime = new Date(soonest);
+        const date = datetime.getDate();
+        const month = datetime.getMonth() + 1;
+        const year = datetime.getFullYear();
+        const hours = datetime.getHours();
+        const minutes = datetime.getMinutes();
+        let string = `${date}/${month}/${year} at ${hours}:${minutes}`;
+        const difference = datetime.getTime() - new Date().getTime();
+        const differenceDays = Math.floor(difference / 1000 / 60 / 60 / 24);
+        let differenceHours = Math.floor(difference / 1000 / 60 / 60);
+        let differenceMinutes = Math.floor(difference / 1000 / 60);
+        if (differenceDays > 0) differenceHours = differenceHours - differenceDays * 24;
+        let inTime = ` `;
+        if (differenceDays > 0) {
+            inTime += `(in ${differenceDays} ${differenceDays !== 1 ? "days" : "day"} and ${differenceHours} ${
+                differenceHours !== 1 ? "hours" : "hour"
+            })`;
+        } else {
+            differenceMinutes = differenceMinutes - differenceDays * 24 * 60 - differenceHours * 60;
+            inTime += `(in ${differenceHours} ${differenceHours !== 1 ? "hours" : "hour"} and ${differenceMinutes} minutes)`;
+        }
+        string += inTime;
+        return string;
     }
 
     // ================================================================================================
@@ -294,6 +341,49 @@ class Model {
     }
 
     getAnswers = () => this.#state.currentQuizAnswers;
+
+    // ================================================================================================
+
+    // dependency of 'updateWords'
+    determineRevisionDateTime(category) {
+        const now = new Date();
+        const nowTime = now.getTime();
+        let result;
+        if (category === "wrong") {
+            // revision today, just a bit later: in 10-30-60 minutes
+            const minutes = 10;
+            const inMs = minutes * 60 * 1000;
+            result = nowTime + inMs;
+        } else if (category === "hard") {
+            // revision tomorrow: in 24 hours
+            const hours = 24;
+            const inMs = hours * 60 * 60 * 1000;
+            result = nowTime + inMs;
+        } else if (category === "good") {
+            // revision in 3-4 days
+            const days = 4;
+            const inMs = days * 24 * 60 * 60 * 1000;
+            result = nowTime + inMs;
+        } else if (category === "easy") {
+            // revision in 7-10 days
+            const days = 9;
+            const inMs = days * 24 * 60 * 60 * 1000;
+            result = nowTime + inMs;
+        }
+        return result;
+    }
+
+    // ================================================================================================
+
+    updateWords(quizedWordsIds, userRatings) {
+        quizedWordsIds.forEach((addedParam, i) => {
+            const index = this.#state.words.findIndex((entry) => entry.added === addedParam);
+            this.#state.words[index].ratedAs = userRatings[i];
+            this.#state.words[index].nextRevisionDateTime = this.determineRevisionDateTime(userRatings[i]);
+        });
+
+        LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+    }
 
     // ================================================================================================
 }

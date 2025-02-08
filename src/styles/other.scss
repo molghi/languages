@@ -41,6 +41,25 @@
     &__sub-title {
         font-size: 18px;
         line-height: 2;
+        span {
+            text-decoration: underline;
+        }
+        span:last-child {
+            text-decoration: none;
+            opacity: 0.3;
+            font-style: italic;
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.1s;
+            &:hover {
+                opacity: 1;
+            }
+        }
+        span.next-revision {
+            opacity: 0.5;
+        }
     }
 
     &__btns {
@@ -156,3 +175,5 @@ span[data-lang] {
     color: #fff !important;
     border-color: #555 !important;
 }
+
+// ================================================================================================

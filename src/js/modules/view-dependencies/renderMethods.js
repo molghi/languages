@@ -86,7 +86,7 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
 
 // ================================================================================================
 
-function showScreen(type) {
+function showScreen(type, nextRevisionString) {
     const chooseRandom = (arr) => Math.floor(Math.random() * arr.length); // returns random index of 'arr'
 
     Visual.removeGreetScreen(); // removing before rendering (if exists)
@@ -101,14 +101,14 @@ function showScreen(type) {
             `<div class="greet-screen__title app-title">Greetings, Honoured Guest!</div>`,
             `<div class="greet-screen__title app-title">Greetings, Young Learner!</div>`,
         ];
-        const secondPart = `<div class="greet-screen__sub-title">Here you may practise your language skills.<br>Add your words and practise them later, or initiate an automatically generated practice session.</div>`;
+        const secondPart = `<div class="greet-screen__sub-title">Here you may practise your language skills.<br>Add your words and practise them later, or initiate an automatically generated practice session.<br>Enhance your vocabulary with <span>spaced repetition*</span> and smart quizzes tailored to your progress.<span>*Spaced Repetition System (SRS) is a learning technique that optimises memory retention by reviewing information at increasing intervals.<br>Difficult items appear more frequently, while easier ones are shown less often, reinforcing knowledge just before forgetting occurs.</span></div>`;
         const choice = chooseRandom(options);
         html = options[choice] + secondPart;
     } else if (type === `advise`) {
         const options = [
             `<div class="greet-screen__title app-title">Practice Makes Perfect</div><div class="greet-screen__sub-title">Even a little bit counts!<br>Regularity and consistency are crucial in any skill-acquisition process.<br>Even small increments play an important role, especially in language learning.</div>`,
             `<div class="greet-screen__title app-title">Embrace Mistakes</div><div class="greet-screen__sub-title">No one is perfect from the start. Mistakes are part of the journey.<br>Learn from them, and they will guide you toward mastery.<br>No stress! Treat it as a game.</div>`,
-            `<div class="greet-screen__title app-title">Language Immersion</div><div class="greet-screen__sub-title">Engagement is essential. Surround yourself with the language.<br>Immerse yourself through listening, reading, and speaking. Search for native resources.</div>`,
+            `<div class="greet-screen__title app-title">Language Immersion</div><div class="greet-screen__sub-title">Engagement is essential. Surround yourself with the language.<br>Immerse yourself through listening, reading, and speaking. Search for native resources.<br>Try comprehensible input!</div>`,
             `<div class="greet-screen__title app-title">Diverse Sources</div><div class="greet-screen__sub-title">Variety in practice strengthens comprehension.<br>Explore different materials, styles, approaches, and methods for well-rounded mastery. Experiment!</div>`,
             `<div class="greet-screen__title app-title">Steady!</div><div class="greet-screen__sub-title">The path to fluency and overall comprehension is gradual.<br>Each step forward, no matter how small, brings you closer.<br>Progress may be invisible at times, but steady effort always leads to improvement.</div>`,
         ];
@@ -120,6 +120,9 @@ function showScreen(type) {
             <button class="greet-screen__btn">Yes</button>
             <button class="greet-screen__btn">No</button>
         </div>`;
+    } else if (type === "revisions completed") {
+        html = `<div class="greet-screen__title app-title">All Revisions Completed!</div>
+<div class="greet-screen__sub-title">You have reviewed all your words for now.<br>The next scheduled revision is not due yet.<br>You can add new words to practice now or return later.<br><span class="next-revision">Next revision: ${nextRevisionString}</span></div>`;
     }
 
     div.innerHTML = html;
@@ -209,8 +212,6 @@ function renderRound(wordObj, rounds, currentRound, isLastRound) {
 // ================================================================================================
 
 function renderEndScreen(currentQuizData, answersArr) {
-    console.log(currentQuizData);
-    console.log(answersArr);
     Visual.removeEndScreen(); // removing before rendering (if exists)
     const div = document.createElement("div");
     div.classList.add("after", "invisible");
@@ -234,11 +235,11 @@ function renderEndScreen(currentQuizData, answersArr) {
                     </div>
                     <div class="after__item-row">
                         <div class="after__item-row-title">Rate Your Knowledge:</div>
-                        <div class="after__item-row-sub-title">Hover over a button to see its meaning</div>
+                        <div class="after__item-row-sub-title">Hover over a button to see what it means</div>
                         <div class="after__item-btn-box">
-                            <button title="You failed to recall the card." class="after__item-btn after__item-btn--wrong">Wrong</button>
-                            <button title="You struggled but got it right." class="after__item-btn after__item-btn--hard">Hard</button>
-                            <button title="You recalled it correctly with little effort." class="after__item-btn after__item-btn--good">Good</button>
+                            <button title="You failed to recall the word" class="after__item-btn after__item-btn--wrong">Wrong</button>
+                            <button title="You struggled but got it right" class="after__item-btn after__item-btn--hard">Hard</button>
+                            <button title="You recalled it correctly with little effort" class="after__item-btn after__item-btn--good">Good</button>
                             <button title="You recalled it effortlessly" class="after__item-btn after__item-btn--easy">Easy</button>
                         </div>
                     </div>

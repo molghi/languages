@@ -41,6 +41,7 @@ function selectLanguage() {
     // render another prompt: Select Language
     const [selectedEl, selectedElText] = Visual.readSelectedOption(); // getting what element was selected on the screen
     const selectedChoice = selectedElText; // either From Saved or From Online
+
     if (selectedChoice === "From Saved") {
         // I have chosen to practice with the words I have interacted with before
         const langsAdded = Logic.getAddedLangs(); // based on all words I have added, I get all languages I have added -- only those must be shown, not all 30
@@ -67,15 +68,26 @@ function beginPractice() {
     const [selectedEl, selectedElText] = Visual.readSelectedOption(); // getting what element was selected on the screen
     const selectedLanguage = selectedElText; // language that was chosen: emoji and text capitalised
     const justLangName = selectedLanguage.split(" ")[1].toLowerCase(); // getting only the lang name
+
     const practiceWords = Logic.getQuizWords(justLangName); // get 10 or less word objs from state, filtered by this language; random indeces if more than 10 words, shuffled if less
-    Logic.setQuizWords(practiceWords); // setting words/rounds for this quiz session; number of words = number of rounds
-    Logic.setRoundsNumber(practiceWords.length);
-    const roundsNumber = Logic.getRoundsNumber();
-    const roundCounter = Logic.getRoundCounter();
-    const wordObjNow = Logic.getThisQuizData()[roundCounter];
-    Logic.incrementRoundCounter();
-    Visual.removePrompt();
-    Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz questions
+
+    if (practiceWords.length > 0) {
+        // means there are words that can be practiced now, according to SRS, so I render the quiz
+        Logic.setQuizWords(practiceWords); // setting words/rounds for this quiz session; number of words = number of rounds
+        Logic.setRoundsNumber(practiceWords.length);
+        const roundsNumber = Logic.getRoundsNumber();
+        const roundCounter = Logic.getRoundCounter();
+        const wordObjNow = Logic.getThisQuizData()[roundCounter];
+        Logic.incrementRoundCounter();
+        Visual.removePrompt();
+        Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz questions
+    } else {
+        // means there are no words that can be practiced now, I have gone through them all, so I just show a message
+        console.log(`no practice now`);
+        Visual.clearApp(); // clearing everything that .app has
+        const nextRevisionString = Logic.getNextRevisionDate();
+        Visual.showScreen("revisions completed", nextRevisionString);
+    }
 }
 
 // ================================================================================================
@@ -114,15 +126,19 @@ function finishSession() {
 
 // ================================================================================================
 
+// dependency of 'appClicksHandler'
 function submitResults() {
     const questionsNumber = [...document.querySelectorAll(".after__item")].length; // getting the total num of questions in that quiz
     const checkedBtnsNum = [...document.querySelectorAll(".after button")].filter((btnEl) =>
         btnEl.classList.contains("active")
     ).length; // getting the number of btns with .active class
+
     if (questionsNumber !== checkedBtnsNum) {
-        Visual.showMessage("error", `You haven't rated your knowledge in each question`);
+        Visual.showMessage("error", `You haven't rated your knowledge in each question yet`);
     } else {
-        Visual.removeEndScreen();
+        const [quizedWordsIds, userRatings] = Visual.getUserRated(); // getting 2 arrays: quiz words ids and all responses to Rate Your Knowledge
+        Logic.updateWords(quizedWordsIds, userRatings);
+        Visual.removeEndScreen(); // removing this Results screen
         Visual.showScreen("uponSubmit"); // showing message screen like: Submitted! Another one?
     }
 }

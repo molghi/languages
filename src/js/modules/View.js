@@ -116,8 +116,8 @@ class View {
 
     // ================================================================================================
 
-    showScreen(type) {
-        showScreen(type);
+    showScreen(type, nextRevisionString) {
+        showScreen(type, nextRevisionString);
     }
 
     // ================================================================================================
@@ -218,6 +218,22 @@ class View {
 
     listenKeyPresses(handler) {
         listenKeyPresses(handler);
+    }
+
+    // ================================================================================================
+
+    getUserRated() {
+        const wordsQuized = [...document.querySelectorAll(".after__item")].map((el) => el.dataset.id);
+        const userRated = [...document.querySelectorAll(".after__item .after__item-btn-box")].map((el) =>
+            el.querySelector(".active").textContent.trim().toLowerCase()
+        );
+        return [wordsQuized, userRated];
+    }
+
+    // ================================================================================================
+
+    clearApp() {
+        while (this.appBlock.firstElementChild) this.appBlock.removeChild(this.appBlock.firstElementChild);
     }
 
     // ================================================================================================
