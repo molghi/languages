@@ -1,0 +1,38 @@
+@use "./initial";
+
+span[data-lang] {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    pointer-events: none;
+}
+.lang-flag {
+    font-size: 40px;
+    pointer-events: none;
+}
+
+.lang-name {
+    pointer-events: none;
+}
+
+.lang-info {
+    transition: all 0.3s;
+    position: absolute;
+    z-index: 10;
+    bottom: 20px;
+    left: 0px;
+    max-width: 900px;
+    width: 100%;
+    line-height: 1.25;
+    padding: 15px;
+    background-color: #111;
+    border: 1px solid #333;
+    span {
+        opacity: 0.5;
+    }
+}
+
+.lang-info__title {
+    text-decoration: underline;
+    font-weight: bold;
+}

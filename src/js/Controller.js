@@ -3,7 +3,6 @@
 "use strict";
 
 import "../styles/main.scss";
-// import myImageNameWithoutExtension from '../img/myImageNameWithExtension'  // myImageNameWithoutExtension will be the src
 
 // instantiating main classes
 import Model from "./modules/Model.js";
@@ -13,101 +12,39 @@ const Visual = new View();
 
 // importing dependencies:
 import appClicksHandler from "./modules/controller-dependencies/appClicksHandler.js";
+import headerHandler from "./modules/controller-dependencies/headerHandler.js";
+import actionsHandler from "./modules/controller-dependencies/actionsHandler.js";
 
 // ================================================================================================
 
 // runs on app start
 function init() {
-    Visual.showScreen("greet");
-    Visual.setAccentColor(Logic.getAccentColor()); // changing the accent color if it was saved to LS
+    Visual.showScreen("greet"); // showing a greeting screen
+    Visual.setAccentColor(Logic.getAccentColor()); // changing the accent color if it was in LS
     runEventListeners();
 }
 init();
 
 // ================================================================================================
 
-// running event listeners
+// running main event listeners
 function runEventListeners() {
     Visual.handleHeaderClicks(headerHandler); // handle clicks in .header
     Visual.handleAppClicks(appClicksHandler); // handle clicks in .app
-    Visual.handleAppHoversIn();
-    Visual.handleAppHoversOut();
-    Visual.listenKeyPresses(keyPressHandler);
-    Visual.handleActionsClicks(actionsHandler);
+    Visual.handleAppHoversIn(); // handle hover-ins in .app
+    Visual.handleAppHoversOut(); // handle hover-outs in .app
+    Visual.listenKeyPresses(keyPressHandler); // listen to when Enter is pressed (when there is .round)
+    Visual.handleActionsClicks(actionsHandler); // handle clicks in .actions
 }
 
 // ================================================================================================
 
-function headerHandler(el) {
-    const type = el.textContent.trim().toLowerCase();
-    if (type === `add word`) {
-        // render Add Word form
-        Visual.removePrompt();
-        Visual.removeGreetScreen();
-        Visual.renderAddForm();
-        Visual.handleFormSubmission(formHandler);
-        const languages = Logic.getLangsList("pure"); // getting the list of lang names and country flags
-        Visual.populateSelect(languages);
-    } else if (type === `practice`) {
-        // commence practice
-        Visual.removeAddForm();
-        Visual.removeGreetScreen();
-        Visual.renderPrompt(
-            "Select Mode",
-            ["From Saved", "From Online"],
-            [
-                `Create a practice session using the materials you've worked with before`,
-                `Create a new practice session with fresh content from an online source`,
-            ],
-            "Select Language >"
-        ); // titleString, optionsArr, optionsExplainers, btnText
-    }
-}
-
-// ================================================================================================
-
-function formHandler(data) {
-    const formData = {};
-    const elements = data.filter((el) => el.tagName !== "BUTTON"); // getting all form elements without button
-    elements.forEach((el) => {
-        if (el.name === "languages") formData["language"] = el.value.trim();
-        else formData[el.name] = el.value.trim(); // populating formData
-    });
-    formData.added = new Date().toISOString();
-    // validation?
-    Logic.addWord(formData); // add to state and LS
-    Visual.showMessage("success", "Added successfully!"); // show message
-    Visual.clearFormFields(); // clear field
-    document.querySelector('form input[type="text"]').focus(); // focus first input
-}
-
-// ================================================================================================
-
+// listen to specific key presses
 function keyPressHandler(keyPressed) {
     if (keyPressed === "enter") {
         // click "Next Round"
-        const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase();
-        appClicksHandler(btnText);
-    }
-}
-
-// ================================================================================================
-
-function actionsHandler(actionType) {
-    if (actionType === "change color") {
-        console.log(`change col`);
-        // changing the accent color
-
-        const newColor = Visual.promptAccentChange();
-        if (!newColor) return;
-        if (newColor && newColor.trim().length < 3) return;
-        const checkedColor = Logic.checkNewColor(newColor);
-        Visual.setAccentColor(checkedColor); // changing visually
-        Logic.setAccentColor(checkedColor); // changing in state and LS
-    } else if (actionType === "export") {
-        console.log(`export`);
-    } else if (actionType === "import") {
-        console.log(`import`);
+        const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase(); // getting the text of that action btn
+        appClicksHandler(btnText); // "clicking"
     }
 }
 

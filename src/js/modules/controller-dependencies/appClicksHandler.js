@@ -2,6 +2,7 @@ import { Visual, Logic } from "../../Controller.js";
 
 // ================================================================================================
 
+// handle clicks in .app
 function appClicksHandler(clickedEl, text) {
     // console.log(clickedEl, text);
 

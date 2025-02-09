@@ -1,0 +1,28 @@
+@use "./initial";
+
+.message {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #fff;
+    padding: 20px 25px;
+    max-width: 1000px;
+    color: #fff;
+    background-color: var(--bg);
+    font-size: 18px;
+    box-shadow: 0 0 10px #fff;
+    transition: all 0.5s;
+}
+
+.success {
+    color: green;
+    border-color: green;
+    box-shadow: 0 0 10px green;
+}
+
+.error {
+    color: red;
+    border-color: red;
+    box-shadow: 0 0 10px red;
+}
