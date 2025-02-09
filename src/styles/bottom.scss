@@ -1,0 +1,90 @@
+@use "./initial";
+
+.bottom-block {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}
+
+// ================================================================================================
+
+.actions {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: var(--accent);
+
+    &:hover .actions__menu {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &:hover .actions__btn {
+        opacity: 1;
+    }
+
+    &__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: var(--accent);
+        cursor: pointer;
+        opacity: 0.3;
+        svg {
+            width: 18px;
+            path {
+                fill: var(--bg);
+            }
+        }
+        &:hover {
+            opacity: 1;
+            box-shadow: 0 0 1px var(--accent);
+        }
+        @media (max-width: #{initial.$md2}px) {
+            // width: 40px;
+            // height: 40px;
+        }
+    }
+
+    &__menu {
+        position: absolute;
+        bottom: 99%;
+        left: -12px;
+        opacity: 0;
+        visibility: hidden;
+        padding: 10px;
+        transition: all 0.3s;
+        background-color: var(--bg);
+    }
+    &__action {
+        cursor: pointer;
+        padding: 3px 5px;
+        font-size: 14px;
+        white-space: nowrap;
+        &:hover {
+            background-color: var(--accent);
+            color: var(--bg);
+        }
+        &:active {
+            opacity: 0.5;
+        }
+        @media (max-width: #{initial.$md2}px) {
+            // padding: 15px;
+        }
+    }
+    &__action--color {
+    }
+    &__action--export {
+    }
+    &__action--import {
+    }
+}
+
+// ================================================================================================
+
+.importer {
+    display: none;
+}

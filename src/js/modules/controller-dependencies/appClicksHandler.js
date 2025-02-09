@@ -3,34 +3,53 @@ import { Visual, Logic } from "../../Controller.js";
 // ================================================================================================
 
 function appClicksHandler(clickedEl, text) {
-    console.log(clickedEl, text);
+    // console.log(clickedEl, text);
+
     if (text === `select language >`) {
+        console.log(`select language`);
         // render another prompt: Select Language
         selectLanguage();
     }
     if (text === `begin practice >`) {
+        console.log(`begin practice`);
         // start the quiz
         beginPractice();
     }
     if (clickedEl === `add`) {
+        console.log(`add`);
         // add a word
     }
     if (clickedEl === `next round >`) {
+        console.log(`next round`);
         nextRound();
     }
     if (clickedEl === `finish session >`) {
+        console.log(`finish session`);
         finishSession();
     }
     if (clickedEl === `rate`) {
+        console.log(`rate`);
         // rating one's knowledge in .after for each question
         const clickedEl = text;
         const ofItem = clickedEl.closest(".after__item");
         [...ofItem.querySelectorAll("button")].forEach((btnEl) => btnEl.classList.remove("active")); // removing active class from all btns
         clickedEl.classList.add("active"); // adding active class to the clicked btn
     }
-    if (clickedEl === `submit`) {
+    if (clickedEl === `submit review`) {
+        console.log(`submit review`);
         // submitting .after
         submitResults();
+    }
+    if (clickedEl === `another yes`) {
+        console.log(`another yes -- generate another session`);
+        // generate another session
+    }
+    if (clickedEl === `another no`) {
+        console.log(`another no`);
+        // show main screen (advice)
+        [...document.querySelectorAll(".header__btn")].forEach((btn) => btn.classList.remove("active"));
+        Visual.clearApp();
+        Visual.showScreen("advise");
     }
 }
 

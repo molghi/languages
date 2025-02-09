@@ -19,6 +19,7 @@ import appClicksHandler from "./modules/controller-dependencies/appClicksHandler
 // runs on app start
 function init() {
     Visual.showScreen("greet");
+    Visual.setAccentColor(Logic.getAccentColor()); // changing the accent color if it was saved to LS
     runEventListeners();
 }
 init();
@@ -32,6 +33,7 @@ function runEventListeners() {
     Visual.handleAppHoversIn();
     Visual.handleAppHoversOut();
     Visual.listenKeyPresses(keyPressHandler);
+    Visual.handleActionsClicks(actionsHandler);
 }
 
 // ================================================================================================
@@ -86,6 +88,26 @@ function keyPressHandler(keyPressed) {
         // click "Next Round"
         const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase();
         appClicksHandler(btnText);
+    }
+}
+
+// ================================================================================================
+
+function actionsHandler(actionType) {
+    if (actionType === "change color") {
+        console.log(`change col`);
+        // changing the accent color
+
+        const newColor = Visual.promptAccentChange();
+        if (!newColor) return;
+        if (newColor && newColor.trim().length < 3) return;
+        const checkedColor = Logic.checkNewColor(newColor);
+        Visual.setAccentColor(checkedColor); // changing visually
+        Logic.setAccentColor(checkedColor); // changing in state and LS
+    } else if (actionType === "export") {
+        console.log(`export`);
+    } else if (actionType === "import") {
+        console.log(`import`);
     }
 }
 

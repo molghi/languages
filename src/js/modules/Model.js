@@ -40,15 +40,16 @@ class Model {
         currentQuizAnswers: [],
         roundCounter: 0,
         roundsNumber: 0,
+        accentColor: "coral",
     };
 
     constructor() {
         this.fetchWordsLS(); // fetching from LS
+        this.fetchAccentColor(); // fetching from LS
         // this.sortData();
         // this.getPopularLangCodes();
         // fetchTranslation();
         // fetchExamplePhrase();
-        this.getNextRevisionDate();
     }
 
     // ================================================================================================
@@ -264,7 +265,7 @@ class Model {
                 const timeNow = new Date().getTime();
                 if (wordObj.nextRevisionDateTime <= timeNow) return wordObj; // if its revision time is either now or in the past, return it to practice now
             });
-            return result;
+            return arr;
         } else {
             // return random 10
             const random10Indeces = this.getRandomTen(languageWords.length);
@@ -384,6 +385,48 @@ class Model {
 
         LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
     }
+
+    // ================================================================================================
+
+    // checking the input accent color -- returns string (color in rgb)
+    checkNewColor(newColor) {
+        // mimicking DOM addition to get the computed color
+        const span = document.createElement("span");
+        document.body.appendChild(span);
+        span.style.color = newColor;
+        let color = window.getComputedStyle(span).color;
+        document.body.removeChild(span);
+
+        const rgbValues = color
+            .slice(4, -1)
+            .split(",")
+            .map((x) => +x.trim()); // just the rgb values (r,g,b)
+
+        if (rgbValues[0] < 40 && rgbValues[1] < 40 && rgbValues[2] < 40) return `rgb(0, 128, 0)`; // return green if it is too dark
+
+        return color;
+    }
+
+    // ================================================================================================
+
+    // setting new accent color - in the state and pushing to LS
+    setAccentColor(color) {
+        this.#state.accentColor = color;
+        LS.save("languagesAccentColor", this.#state.accentColor, "prim"); // push to LS a primitive type
+    }
+
+    // ================================================================================================
+
+    // getting the accent color from LS
+    fetchAccentColor() {
+        const fetched = LS.get("languagesAccentColor", "prim");
+        if (!fetched) return;
+        this.#state.accentColor = fetched;
+    }
+
+    // ================================================================================================
+
+    getAccentColor = () => this.#state.accentColor;
 
     // ================================================================================================
 }

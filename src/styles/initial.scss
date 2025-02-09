@@ -92,7 +92,8 @@ input::placeholder {
 
 $minwidth: 320px;
 
-$mw: 1170; // the width of the content, the container width
+// $mw: 1170; // the width of the content, the container width
+$mw: 1000; // the width of the content, the container width
 
 $md1: $mw + 12; // 1st breakpoint
 $md2: 992.98; // for tablets, 1024х768px is a size of a little PC monitor or iPad

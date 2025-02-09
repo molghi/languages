@@ -2,12 +2,14 @@
 
 .after {
     transition: all 0.5s;
+    padding-bottom: 70px;
     &__title {
         // margin-top: 5px;
         margin-bottom: 5px;
+        display: inline-block;
     }
     &__sub-title {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         line-height: 1.5;
         padding-left: 10px;
     }

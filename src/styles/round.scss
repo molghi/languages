@@ -2,11 +2,11 @@
 
 .round {
     transition: all 0.5s;
-    margin-top: 50px;
+    margin-top: 10px;
     text-align: center;
 
     &__total-progress {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         text-align: left;
     }
     &__total-progress-bar {
@@ -14,6 +14,10 @@
         height: 5px;
         background-color: var(--accent);
         margin-bottom: 10px;
+    }
+    &__box {
+        max-width: 500px;
+        margin: 0 auto;
     }
     &__title {
         font-size: 30px;
@@ -25,9 +29,11 @@
         margin-bottom: 40px;
     }
     &__input {
+        margin-top: 40px;
         margin-bottom: 50px;
         input {
-            width: 500px;
+            // width: 500px;
+            width: 100%;
         }
     }
     &__action-btn-box {
@@ -35,5 +41,20 @@
     }
     &__action-btn {
         transition: box-shadow 0.3s;
+    }
+    &__row {
+        // display: flex;
+        // align-items: center;
+        // column-gap: 10px;
+        margin-bottom: 30px;
+        text-align: left;
+        line-height: 1.5;
+    }
+    &__row-title {
+        opacity: 0.5;
+        display: inline;
+    }
+    &__row-value {
+        display: inline;
     }
 }
