@@ -19,6 +19,9 @@ function actionsHandler(actionType) {
         Logic.exportWords();
     } else if (actionType === "import") {
         console.log(`import`);
+        alert(
+            "NOTE:\nWith this option, you can only import as JSON, and it must be formatted exactly like the file that you can export here."
+        );
         // Visual.fileInputEl.click();
     }
 }

@@ -4,6 +4,7 @@ import { Visual } from "../../Controller.js";
 
 function renderRound(wordObj, rounds, currentRound, isLastRound) {
     console.log(wordObj);
+    if (!wordObj) return console.log(`no round info to render`);
 
     Visual.removeRound(); // removing before rendering (if exists)
     const div = document.createElement("div");

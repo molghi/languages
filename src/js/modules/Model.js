@@ -179,7 +179,9 @@ class Model {
 
     // get 10 or less words from state, filtered by this language -- random words? random if more than 10
     getQuizWords(language) {
-        const languageWords = this.#state.words.filter((wordObj) => wordObj.language === language);
+        const languageWords = this.#state.words.filter(
+            (wordObj) => wordObj.language.toLowerCase().trim() === language.toLowerCase().trim()
+        );
         if (languageWords.length < 11) {
             // returned shuffled
             const shuffledIndeces = this.shuffleArray(languageWords.length);
@@ -192,7 +194,7 @@ class Model {
                 const timeNow = new Date().getTime();
                 if (wordObj.nextRevisionDateTime <= timeNow) return wordObj; // if its revision time is either now or in the past, return it to practice now
             });
-            return arr;
+            return result;
         } else {
             // return random 10
             const random10Indeces = this.getRandomTen(languageWords.length);
@@ -222,7 +224,7 @@ class Model {
         const year = datetime.getFullYear();
         const hours = datetime.getHours();
         const minutes = datetime.getMinutes();
-        let string = `${date}/${month}/${year} at ${hours}:${minutes}`;
+        let string = `${date}/${month}/${year} at ${hours}:${minutes.toString().padStart(2, 0)}`;
         const difference = datetime.getTime() - new Date().getTime();
         const differenceDays = Math.floor(difference / 1000 / 60 / 60 / 24);
         let differenceHours = Math.floor(difference / 1000 / 60 / 60);
@@ -304,12 +306,14 @@ class Model {
     // ================================================================================================
 
     updateWords(quizedWordsIds, userRatings) {
-        quizedWordsIds.forEach((addedParam, i) => {
-            const index = this.#state.words.findIndex((entry) => entry.added === addedParam);
+        console.log(quizedWordsIds, userRatings);
+        quizedWordsIds.forEach((idParam, i) => {
+            const index = this.#state.words.findIndex((entry) => entry.id === idParam);
             this.#state.words[index].ratedAs = userRatings[i];
             this.#state.words[index].nextRevisionDateTime = this.determineRevisionDateTime(userRatings[i]);
         });
 
+        console.log(this.#state.words);
         LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
     }
 

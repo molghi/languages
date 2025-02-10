@@ -23,7 +23,7 @@ function renderQuickPopup(lang, hoveredItem) {
 
 // ================================================================================================
 
-function renderMessage(type, text) {
+function renderMessage(type, text, removeAfterMs) {
     Visual.removeMessage(); // removing before rendering (if exists)
 
     const div = document.createElement("div");
@@ -39,7 +39,7 @@ function renderMessage(type, text) {
 
     setTimeout(() => {
         Visual.removeMessage(); // removing after 5 sec
-    }, 5000);
+    }, removeAfterMs || 5000);
 }
 
 // ================================================================================================

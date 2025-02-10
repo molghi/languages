@@ -2,7 +2,7 @@
 
 // importing dependencies:
 import { renderQuickPopup, renderMessage } from "./view-dependencies/renderMethods.js";
-import renderAddForm from "./view-dependencies/renderAddForm.js";
+import { renderAddForm, renderAddManyForm } from "./view-dependencies/renderAddForm.js";
 import renderRound from "./view-dependencies/renderRound.js";
 import renderPrompt from "./view-dependencies/renderPrompt.js";
 import showScreen from "./view-dependencies/renderScreen.js";
@@ -14,6 +14,7 @@ import {
     handleAppHoversOut,
     handleFormSubmission,
     handleActionsClicks,
+    handleBulkFormSubmission,
 } from "./view-dependencies/eventHandlers.js";
 import { someFrequentNouns } from "./model-dependencies/dataMyLists.js";
 import listenKeyPresses from "./view-dependencies/keyCommands.js";
@@ -157,8 +158,8 @@ class View {
     // ================================================================================================
 
     // rendering .message
-    showMessage(type, text) {
-        renderMessage(type, text);
+    showMessage(type, text, removeAfterMs) {
+        renderMessage(type, text, removeAfterMs);
     }
 
     // ================================================================================================
@@ -217,7 +218,7 @@ class View {
 
     // get the values of Rate Your Knowledge btns, in .after
     getUserRated() {
-        const wordsQuized = [...document.querySelectorAll(".after__item")].map((el) => el.dataset.id); // getting the IDs (.added)
+        const wordsQuized = [...document.querySelectorAll(".after__item")].map((el) => el.dataset.id); // getting the IDs
         const userRated = [...document.querySelectorAll(".after__item .after__item-btn-box")].map((el) =>
             el.querySelector(".active").textContent.trim().toLowerCase()
         ); // getting what a user rated them
@@ -253,6 +254,19 @@ class View {
     setAccentColor(color) {
         if (!color) return;
         document.documentElement.style.setProperty("--accent", color); // changing the accent colour
+    }
+
+    // ================================================================================================
+
+    // render a form to add many words at once
+    renderAddManyForm() {
+        renderAddManyForm();
+    }
+
+    // ================================================================================================
+
+    handleBulkFormSubmission(handler) {
+        handleBulkFormSubmission(handler);
     }
 
     // ================================================================================================

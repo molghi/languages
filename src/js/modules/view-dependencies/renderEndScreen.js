@@ -46,7 +46,7 @@ function renderEndScreen(currentQuizData, answersArr) {
             </div>`
             : "";
 
-        return `<li class="after__item" data-id="${currentQuizData[i].added}">
+        return `<li class="after__item" data-id="${currentQuizData[i].id}">
                     <div class="after__item-number">${i + 1}</div>
                     <div class="after__item-row">
                         <div class="after__item-row-title">Question:</div>

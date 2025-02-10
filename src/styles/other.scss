@@ -29,8 +29,29 @@
     display: flex;
     flex-direction: row;
     column-gap: 40px;
-    justify-content: space-evenly;
+    // justify-content: space-evenly;
+    justify-content: space-between;
     flex-wrap: wrap;
+
+    .prompt__option-content {
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        padding: 5px 15px;
+        border-color: #555;
+        color: #fff;
+        &:hover {
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+    }
+}
+
+.few {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 40px;
 
     .prompt__option-content {
         display: flex;

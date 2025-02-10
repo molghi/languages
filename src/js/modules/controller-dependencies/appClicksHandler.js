@@ -1,4 +1,5 @@
 import { Visual, Logic } from "../../Controller.js";
+import formHandler from "./formHandler.js";
 
 // ================================================================================================
 
@@ -19,6 +20,12 @@ function appClicksHandler(clickedEl, text) {
     if (clickedEl === `add`) {
         console.log(`add`);
         // add a word
+    }
+    if (clickedEl === `bulk add`) {
+        // it was a click on Add Multiple btn -- show such a form for it
+        Visual.renderAddManyForm();
+        // Visual.handleBulkFormSubmission(formHandler); // handling this form submission
+        Visual.handleFormSubmission(formHandler); // handling this form submission
     }
     if (clickedEl === `next round >`) {
         console.log(`next round`);
@@ -90,6 +97,7 @@ function beginPractice() {
     const justLangName = selectedLanguage.split(" ")[1].toLowerCase(); // getting only the lang name
 
     const practiceWords = Logic.getQuizWords(justLangName); // get 10 or less word objs from state, filtered by this language; random indeces if more than 10 words, shuffled if less
+    console.log(practiceWords);
 
     if (practiceWords.length > 0) {
         // means there are words that can be practiced now, according to SRS, so I render the quiz
@@ -103,7 +111,7 @@ function beginPractice() {
         Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz questions
     } else {
         // means there are no words that can be practiced now, I have gone through them all, so I just show a message
-        console.log(`no practice now`);
+        console.log(`there are no words that can be practiced now, I have gone through them all`);
         Visual.clearApp(); // clearing everything that .app has
         const nextRevisionString = Logic.getNextRevisionDate();
         Visual.showScreen("revisions completed", nextRevisionString);
@@ -159,7 +167,7 @@ function submitResults() {
         const [quizedWordsIds, userRatings] = Visual.getUserRated(); // getting 2 arrays: quiz words ids and all responses to Rate Your Knowledge
         Logic.updateWords(quizedWordsIds, userRatings);
         Visual.removeEndScreen(); // removing this Results screen
-        Visual.showScreen("uponSubmit"); // showing message screen like: Submitted! Another one?
+        Visual.showScreen("uponSubmit"); // showing message screen like: Review submitted! Another session?
     }
 }
 

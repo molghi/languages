@@ -40,9 +40,14 @@ function handleAppClicks(handler) {
             handler(clickedBtn, text);
         }
 
-        if (e.target.closest(".form__btn")) {
+        if (e.target.closest(".form__btn--add")) {
             // it was a click on Add btn when adding a word
             handler("add");
+        }
+
+        if (e.target.closest(".form--add .form__btn--bulk")) {
+            // it was a click on Add Multiple btn when adding a word -- show a form to add many words at once
+            handler("bulk add");
         }
 
         if (e.target.closest(".round__action-btn")) {
@@ -98,7 +103,18 @@ function handleAppHoversOut(handler) {
 
 // handle the Add Word form submission
 function handleFormSubmission(handler) {
+    // document.querySelector(".form--add form").addEventListener("submit", function (e) {
     document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        handler([...this.elements]); // this.elements = all form elements
+    });
+}
+
+// ================================================================================================
+
+// handle the Add Multiple Words form submission
+function handleBulkFormSubmission(handler) {
+    document.querySelector(".form--bulk form").addEventListener("submit", function (e) {
         e.preventDefault();
         handler([...this.elements]); // this.elements = all form elements
     });
@@ -119,4 +135,12 @@ function handleActionsClicks(handler) {
 
 // ================================================================================================
 
-export { handleHeaderClicks, handleAppClicks, handleAppHoversIn, handleAppHoversOut, handleFormSubmission, handleActionsClicks };
+export {
+    handleHeaderClicks,
+    handleAppClicks,
+    handleAppHoversIn,
+    handleAppHoversOut,
+    handleFormSubmission,
+    handleActionsClicks,
+    handleBulkFormSubmission,
+};

@@ -23,16 +23,16 @@ function getLangsList(type) {
             "🇮🇹 Italian",
             "🇮🇷 Persian",
             "🇰🇷 Korean",
-            "🇮🇳 Tamil",
+            // "🇮🇳 Tamil",
             "🇻🇳 Vietnamese",
             "🇵🇱 Polish",
-            "🇳🇱 Dutch",
+            // "🇳🇱 Dutch",
             "🇹🇭 Thai",
             "🇬🇷 Greek",
             "🇮🇱 Hebrew",
-            "🇲🇾 Malay",
-            "🇺🇦 Ukrainian",
-            "🇵🇭 Tagalog",
+            // "🇲🇾 Malay",
+            // "🇺🇦 Ukrainian",
+            // "🇵🇭 Tagalog",
         ];
     }
     return [
@@ -56,16 +56,16 @@ function getLangsList(type) {
         "<span data-lang='it'><span class='lang-flag'>🇮🇹</span> <span class='lang-name'>Italian</span></span>",
         "<span data-lang='pe'><span class='lang-flag'>🇮🇷</span> <span class='lang-name'>Persian</span></span>",
         "<span data-lang='ko'><span class='lang-flag'>🇰🇷</span> <span class='lang-name'>Korean</span></span>",
-        "<span data-lang='ta'><span class='lang-flag'>🇮🇳</span> <span class='lang-name'>Tamil</span></span>",
+        // "<span data-lang='ta'><span class='lang-flag'>🇮🇳</span> <span class='lang-name'>Tamil</span></span>",
         "<span data-lang='vi'><span class='lang-flag'>🇻🇳</span> <span class='lang-name'>Vietnamese</span></span>",
         "<span data-lang='po'><span class='lang-flag'>🇵🇱</span> <span class='lang-name'>Polish</span></span>",
-        "<span data-lang='du'><span class='lang-flag'>🇳🇱</span> <span class='lang-name'>Dutch</span></span>",
+        // "<span data-lang='du'><span class='lang-flag'>🇳🇱</span> <span class='lang-name'>Dutch</span></span>",
         "<span data-lang='th'><span class='lang-flag'>🇹🇭</span> <span class='lang-name'>Thai</span></span>",
         "<span data-lang='gr'><span class='lang-flag'>🇬🇷</span> <span class='lang-name'>Greek</span></span>",
         "<span data-lang='he'><span class='lang-flag'>🇮🇱</span> <span class='lang-name'>Hebrew</span></span>",
-        "<span data-lang='ma'><span class='lang-flag'>🇲🇾</span> <span class='lang-name'>Malay</span></span>",
-        "<span data-lang='uk'><span class='lang-flag'>🇺🇦</span> <span class='lang-name'>Ukrainian</span></span>",
-        "<span data-lang='ta'><span class='lang-flag'>🇵🇭</span> <span class='lang-name'>Tagalog</span></span>",
+        // "<span data-lang='ma'><span class='lang-flag'>🇲🇾</span> <span class='lang-name'>Malay</span></span>",
+        // "<span data-lang='uk'><span class='lang-flag'>🇺🇦</span> <span class='lang-name'>Ukrainian</span></span>",
+        // "<span data-lang='ta'><span class='lang-flag'>🇵🇭</span> <span class='lang-name'>Tagalog</span></span>",
     ];
 }
 

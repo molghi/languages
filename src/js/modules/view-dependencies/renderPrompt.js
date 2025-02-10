@@ -18,7 +18,7 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
         })
         .join("");
 
-    let viewClass = optionsArr.length > 1 ? " many" : ""; // if there are more than 4 elements, they will be flexed -- less, won't
+    let viewClass = optionsArr.length > 5 ? " many" : " few"; // if there are more than 4 elements, they will be flexed -- less, won't
     if (optionsArr.includes("From Saved")) viewClass = ""; // do not apply the language rendering styles if it's not languages that this prompt is rendering
 
     // getting HTML part 2:

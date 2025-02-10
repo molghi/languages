@@ -1,4 +1,5 @@
 import { Visual, Logic } from "../../Controller.js";
+import formHandler from "./formHandler.js";
 
 // ================================================================================================
 
@@ -27,25 +28,6 @@ function headerHandler(el) {
             "Select Language >"
         ); // args: titleString, optionsArr, optionsExplainers, btnText
     }
-}
-
-// ================================================================================================
-
-// handle Add Word form -- only called in 'headerHandler'
-function formHandler(data) {
-    const formData = {};
-    const elements = data.filter((el) => el.tagName !== "BUTTON"); // getting all form elements without button
-    elements.forEach((el) => {
-        if (el.name === "languages") formData["language"] = el.value.trim();
-        else formData[el.name] = el.value.trim(); // populating formData
-    });
-    formData.added = new Date().toISOString(); // 'added' acts as ID
-    formData.id = new Date().getTime(); // I added it later
-    // validation?
-    Logic.addWord(formData); // add to state and LS
-    Visual.showMessage("success", "Added successfully!"); // show message
-    Visual.clearFormFields(); // clear field
-    document.querySelector('form input[type="text"]').focus(); // focus first input
 }
 
 // ================================================================================================
