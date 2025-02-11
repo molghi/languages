@@ -3,13 +3,20 @@
 // NOTE: because I import with 'use' and not 'import' (which is deprecated), I must use this syntax now: @media (max-width: #{initial.$md3}px) { ... }
 
 .footer {
-    padding: 20px 0;
     &__column {
+        padding: 20px 0;
         opacity: 0.3;
         font-size: 14px;
+        transition: all 0.1s;
         &:hover {
             opacity: 1;
         }
+    }
+
+    &__last-practiced {
+        display: flex;
+        align-items: center;
+        column-gap: 70px;
     }
 }
 
@@ -46,6 +53,8 @@
         }
     }
 }
+
+// ================================================================================================
 
 .few {
     display: flex;

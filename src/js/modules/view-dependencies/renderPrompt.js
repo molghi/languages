@@ -18,8 +18,8 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
         })
         .join("");
 
-    let viewClass = optionsArr.length > 5 ? " many" : " few"; // if there are more than 4 elements, they will be flexed -- less, won't
-    if (optionsArr.includes("From Saved")) viewClass = ""; // do not apply the language rendering styles if it's not languages that this prompt is rendering
+    let viewClass = optionsArr.length > 5 ? " many" : " few"; // if there are more than 5 elements, there will be special styles applied
+    if (optionsArr.includes("Review Your Words")) viewClass = ""; // do not apply the language rendering styles if it's not languages that this prompt is rendering
 
     // getting HTML part 2:
     const html = `<div class="prompt__title app-title">${titleString}</div>

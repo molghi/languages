@@ -64,7 +64,7 @@ function returnScreenHtml(type, nextRevisionString) {
         //
     } else if (type === `revisions completed`) {
         result = `<div class="greet-screen__title app-title">All Revisions Completed!</div>
-<div class="greet-screen__sub-title">You have reviewed all your words for this language for now.<br>The next scheduled revision is not due yet.<br>You may add new words to practice now or return later.<br><span class="next-revision">Next revision: ${nextRevisionString}</span></div>`;
+<div class="greet-screen__sub-title">You have reviewed all your words for this language for now.<br>The next scheduled revision is not due yet.<br>You may add new words to practise now or return later.<br><span class="next-revision">Next revision: ${nextRevisionString}</span></div>`;
     }
 
     return result;

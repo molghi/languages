@@ -59,6 +59,7 @@
         transition: all 0.3s;
         background-color: var(--bg);
     }
+
     &__action {
         cursor: pointer;
         padding: 3px 5px;
@@ -75,6 +76,7 @@
             // padding: 15px;
         }
     }
+
     &__action--color {
     }
     &__action--export {

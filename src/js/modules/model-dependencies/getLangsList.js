@@ -1,5 +1,4 @@
 //
-
 function getLangsList(type) {
     if (type === "pure") {
         return [

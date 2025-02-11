@@ -8,19 +8,23 @@
         display: inline-block;
         margin-bottom: 30px;
     }
+
     &__box {
         display: flex;
         flex-direction: column;
         row-gap: 30px;
     }
+
     &__option {
         &--option {
         }
+
         &--action {
             flex: 1 1 100%;
             text-align: right;
             margin-top: 50px;
         }
+
         &--explainer {
             color: var(--accent);
             opacity: 0.5;
@@ -28,9 +32,11 @@
                 opacity: 1;
             }
         }
+
         &-content {
             white-space: nowrap;
         }
+
         &-content,
         &-action-content {
             cursor: pointer;
@@ -48,6 +54,7 @@
                 opacity: 0.7;
             }
         }
+
         &--choice {
             display: flex;
             align-items: center;

@@ -2,7 +2,7 @@ import { Logic } from "../../Controller.js";
 
 // ================================================================================================
 
-// exporting as .json
+// exporting json
 function exportAsJson() {
     const data = Logic.getWordsState();
 
@@ -13,7 +13,9 @@ function exportAsJson() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    const filename = `langtutor-export--${date}-${month}-${year.toString().slice(2)}--${hours}-${minutes}.json`;
+    const filename = `langtutor-export--${date}-${month}-${year.toString().slice(2)}--${hours}-${minutes
+        .toString()
+        .padStart(2, 0)}.json`;
 
     const json = JSON.stringify(data, null, 2); // Converting data to JSON: Converts the JavaScript object 'data' into a formatted JSON string. The 'null, 2' arguments ensure the output is pretty-printed with 2-space indentation for readability.
     const blob = new Blob([json], { type: "application/json" }); // Creating a blob: Creates a binary large object (Blob) containing the JSON string, specifying the MIME type as 'application/json' to ensure it's recognised as a JSON file.

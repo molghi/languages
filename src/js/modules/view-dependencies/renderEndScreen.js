@@ -2,6 +2,7 @@ import { Visual } from "../../Controller.js";
 
 // ================================================================================================
 
+// rendering the .after block
 function renderEndScreen(currentQuizData, answersArr) {
     console.log(currentQuizData, answersArr);
 
@@ -10,7 +11,30 @@ function renderEndScreen(currentQuizData, answersArr) {
     div.classList.add("after", "invisible");
 
     // getting html, part 1
-    const itemsHtml = answersArr.map((answer, i) => {
+    const itemsHtml = returnAfterHtml(currentQuizData, answersArr);
+
+    // getting html, part 2
+    div.innerHTML = `<div class="after__title app-title">Review Your Responses</div>
+                        <div class="after__sub-title">▶︎ Rate your knowledge for each question – this is required for the app to tailor your learning experience.</div>
+                        <ol class="after__items">
+                        ${itemsHtml.join("")}
+                            <div class="after__action-btn-box">
+                                <button class="after__action-btn">Submit Review</button>
+                            </div>
+                        </ol>`;
+
+    Visual.appBlock.appendChild(div);
+
+    setTimeout(() => {
+        div.classList.remove("invisible"); // showing it with some animation
+    }, 200);
+}
+
+// ================================================================================================
+
+// dependency of 'renderEndScreen'
+function returnAfterHtml(currentQuizData, answersArr) {
+    return answersArr.map((answer, i) => {
         let exampleTargetHtml = currentQuizData[i].exampleTarget
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Example sentence:</div>
@@ -79,24 +103,6 @@ function renderEndScreen(currentQuizData, answersArr) {
                     </div>
                 </li>`;
     });
-
-    // getting html, part 2
-    div.innerHTML = `<div class="after__title app-title">Review Your Responses</div>
-                        <div class="after__sub-title">
-                            ▶︎ Rate your knowledge for each question – this is required for the app to tailor your learning experience.
-                        </div>
-                        <ol class="after__items">
-                        ${itemsHtml.join("")}
-                            <div class="after__action-btn-box">
-                                <button class="after__action-btn">Submit Review</button>
-                            </div>
-                        </ol>`;
-
-    Visual.appBlock.appendChild(div);
-
-    setTimeout(() => {
-        div.classList.remove("invisible"); // showing it with some animation
-    }, 200);
 }
 
 // ================================================================================================

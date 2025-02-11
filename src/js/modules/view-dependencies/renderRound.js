@@ -3,7 +3,6 @@ import { Visual } from "../../Controller.js";
 // ================================================================================================
 
 function renderRound(wordObj, rounds, currentRound, isLastRound) {
-    console.log(wordObj);
     if (!wordObj) return console.log(`no round info to render`);
 
     Visual.removeRound(); // removing before rendering (if exists)
@@ -32,7 +31,8 @@ function renderRound(wordObj, rounds, currentRound, isLastRound) {
             </div>`
         : "";
 
-    const btnText = !isLastRound ? "Next round >" : "Finish session >";
+    let btnText = !isLastRound ? "Next round >" : "Finish session >";
+    if (rounds === 1) btnText = "Finish session >";
 
     div.innerHTML = `<div class="round__total-progress">
                             <span class="round__total-progress-bar" style="width: ${

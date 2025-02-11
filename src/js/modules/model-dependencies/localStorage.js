@@ -4,10 +4,6 @@ class LS {
     constructor() {
         // this.save('name', 'John')   -->   NOTE: if you pass a ref type, do not stringify it beforehand else it gets double-stringified!
         // this.get('name')   -->   NOTE: if you get a ref type, do not parse it!
-        // this.getAll()
-        // this.remove('name')
-        // this.clear()
-        // this.length
     }
 
     // ================================================================================================
@@ -69,4 +65,3 @@ class LS {
 }
 
 export default new LS(); // I export and instantiate it right here, so I don't have to instantiate it where I import it
-// export default LS

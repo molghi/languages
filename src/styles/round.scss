@@ -9,25 +9,30 @@
         margin-bottom: 20px;
         text-align: left;
     }
+
     &__total-progress-bar {
         display: block;
         height: 5px;
         background-color: var(--accent);
         margin-bottom: 10px;
     }
+
     &__box {
         max-width: 500px;
         margin: 0 auto;
     }
+
     &__title {
         font-size: 30px;
         margin-bottom: 30px;
         font-style: italic;
     }
+
     &__word {
         display: inline-block;
         margin-bottom: 40px;
     }
+
     &__input {
         margin-top: 40px;
         margin-bottom: 50px;
@@ -35,21 +40,26 @@
             width: 100%;
         }
     }
+
     &__action-btn-box {
         text-align: right;
     }
+
     &__action-btn {
         transition: box-shadow 0.3s;
     }
+
     &__row {
         margin-bottom: 30px;
         text-align: left;
         line-height: 1.5;
     }
+
     &__row-title {
         opacity: 0.5;
         display: inline;
     }
+
     &__row-value {
         display: inline;
     }

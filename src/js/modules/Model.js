@@ -43,15 +43,64 @@ class Model {
         roundCounter: 0,
         roundsNumber: 0,
         accentColor: "coral",
+        lastPracticed: "Never", // data object
+        sessionsPlayedToday: 0, // number of sessions played
+        lastPracticedTimer: 0,
+        languagePracticedNow: "",
     };
 
     constructor() {
         this.fetchWordsLS(); // fetching from LS
         this.fetchAccentColor(); // fetching from LS
+        this.fetchLastPracticed(); // fetching from LS
+        this.fetchSessionsPlayedToday(); // fetching from LS
     }
 
     // ================================================================================================
 
+    // getting and setting languagePracticedNow
+    setLanguagePracticedNow = (value) => (this.#state.languagePracticedNow = value);
+
+    getLanguagePracticedNow = () => this.#state.languagePracticedNow;
+
+    // ================================================================================================
+
+    // getting, setting and fetching lastPracticed
+    getLastPracticed = () => this.#state.lastPracticed;
+
+    setLastPracticed = (value) => {
+        this.#state.lastPracticed = value;
+        LS.save(`languagesLastPracticed`, this.#state.lastPracticed, "prim"); // key, value, type = "prim"
+    };
+
+    fetchLastPracticed() {
+        const fetched = LS.get(`languagesLastPracticed`, "prim"); // key, type = "primitive"
+        if (!fetched) return;
+        this.#state.lastPracticed = fetched;
+    }
+
+    // ================================================================================================
+
+    // getting, setting and fetching sessionsPlayedToday
+    getSessionsPlayedToday = () => this.#state.sessionsPlayedToday;
+
+    setSessionsPlayedToday = () => {
+        this.#state.sessionsPlayedToday += 1;
+        const nowDate = new Date().getDate();
+        const lastPracticedDate = new Date(this.#state.lastPracticed).getDate();
+        if (nowDate !== lastPracticedDate) this.#state.sessionsPlayedToday = 0;
+        LS.save(`languagesSessionsPlayed`, this.#state.sessionsPlayedToday, "prim"); // key, value, type = "prim"
+    };
+
+    fetchSessionsPlayedToday() {
+        const fetched = LS.get(`languagesSessionsPlayed`, "prim"); // key, type = "primitive"
+        if (!fetched) return;
+        this.#state.sessionsPlayedToday = +fetched;
+    }
+
+    // ================================================================================================
+
+    // sort the data from 'dataMyLists.js' and 'dataOxford.js'
     sortData() {
         const allTogether = all;
 
@@ -74,6 +123,7 @@ class Model {
 
     // ================================================================================================
 
+    // getting popular language codes from the api
     async getPopularLangCodes() {
         const fetched = await fetchLangs();
         console.log(fetched.result);
@@ -116,27 +166,32 @@ class Model {
 
     // ================================================================================================
 
+    // getting the list of languages to display in the UI
     getLangsList(type) {
         return getLangsList(type);
     }
 
     // ================================================================================================
 
+    // adding one word
     addWord(dataObj) {
         this.#state.words.push(dataObj); // pushing to state
         LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
     }
 
+    // fetching words from LS
     fetchWordsLS() {
         const fetched = LS.get(`languagesWords`, "ref"); // key, type = "primitive"
         if (!fetched) return;
         fetched.forEach((wordObj) => this.#state.words.push(wordObj));
     }
 
+    // getting all words from the state
     getWordsState = () => this.#state.words;
 
     // ================================================================================================
 
+    // getting the languages that I have added
     getAddedLangs() {
         const stateWords = this.#state.words;
         const langs = stateWords.map((wordObj) => wordObj.language.toLowerCase());
@@ -145,7 +200,7 @@ class Model {
 
     // ================================================================================================
 
-    // returns an array of indexes randomly shuffled
+    // returns an array of indeces randomly shuffled
     shuffleArray(numberOfElements) {
         const result = [];
         // const arr = new Array(numberOfElements).fill(0).map((x, i) => i);
@@ -158,6 +213,7 @@ class Model {
 
     // ================================================================================================
 
+    // getting a random number
     getRandomNum(upperLimit) {
         const randomNum = Math.floor(Math.random() * upperLimit); // between 0 and upperLimit excl. last
         return randomNum;
@@ -245,14 +301,17 @@ class Model {
 
     // ================================================================================================
 
+    // setting the data for the current quiz
     setQuizWords(dataArr) {
         this.#state.currentQuizData = dataArr;
     }
 
+    // getting the data for the current quiz
     getThisQuizData = () => this.#state.currentQuizData;
 
     // ================================================================================================
 
+    // incrementing, getting and resetting the current round counter
     incrementRoundCounter = () => (this.#state.roundCounter += 1);
 
     getRoundCounter = () => this.#state.roundCounter;
@@ -261,15 +320,18 @@ class Model {
 
     // ================================================================================================
 
+    // getting and setting total rounds number
     getRoundsNumber = () => this.#state.roundsNumber;
     setRoundsNumber = (value) => (this.#state.roundsNumber = value);
 
     // ================================================================================================
 
+    // pushing one answer
     pushAnswer(string) {
         this.#state.currentQuizAnswers.push(string.trim());
     }
 
+    // getting all answers
     getAnswers = () => this.#state.currentQuizAnswers;
 
     // ================================================================================================
@@ -305,6 +367,7 @@ class Model {
 
     // ================================================================================================
 
+    // updating words after submitting the Review Your Responses screen
     updateWords(quizedWordsIds, userRatings) {
         console.log(quizedWordsIds, userRatings);
         quizedWordsIds.forEach((idParam, i) => {
@@ -351,13 +414,38 @@ class Model {
         this.#state.accentColor = fetched;
     }
 
+    // getting the accent color from the state
     getAccentColor = () => this.#state.accentColor;
 
     // ================================================================================================
 
+    // exporting json
     exportWords() {
         exportAsJson();
     }
+
+    // ================================================================================================
+
+    // saving words to LS
+    saveWords() {
+        LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+    }
+
+    // ================================================================================================
+
+    // starting the Last Practiced timer
+    startLastPracticedTimer(handler) {
+        this.stopLastPracticedTimer();
+
+        this.#state.lastPracticedTimer = setInterval(() => {
+            handler();
+        }, 1000 * 60); // every minute
+    }
+
+    // ================================================================================================
+
+    // clearing the Last Practiced timer
+    stopLastPracticedTimer = () => clearInterval(this.#state.lastPracticedTimer);
 
     // ================================================================================================
 }

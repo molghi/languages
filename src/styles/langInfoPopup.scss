@@ -6,6 +6,7 @@ span[data-lang] {
     column-gap: 10px;
     pointer-events: none;
 }
+
 .lang-flag {
     font-size: 40px;
     pointer-events: none;
@@ -28,6 +29,7 @@ span[data-lang] {
     padding: 15px;
     background-color: #111;
     border: 1px solid #333;
+
     span {
         opacity: 0.5;
     }

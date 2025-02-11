@@ -3,6 +3,7 @@ import languagesQuickInfo from "./languagesQuickInfo.js";
 
 // ================================================================================================
 
+// rendering a quick popup with the language info
 function renderQuickPopup(lang, hoveredItem) {
     if (!lang || !hoveredItem) return;
     Visual.removePopup(); // removing before rendering (if exists)
@@ -23,6 +24,7 @@ function renderQuickPopup(lang, hoveredItem) {
 
 // ================================================================================================
 
+// rendering a message
 function renderMessage(type, text, removeAfterMs) {
     Visual.removeMessage(); // removing before rendering (if exists)
 
@@ -38,7 +40,7 @@ function renderMessage(type, text, removeAfterMs) {
     }, 200);
 
     setTimeout(() => {
-        Visual.removeMessage(); // removing after 5 sec
+        Visual.removeMessage(); // removing after 5 sec or more (if was specified)
     }, removeAfterMs || 5000);
 }
 

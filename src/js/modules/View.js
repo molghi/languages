@@ -14,7 +14,7 @@ import {
     handleAppHoversOut,
     handleFormSubmission,
     handleActionsClicks,
-    handleBulkFormSubmission,
+    handleFileImport,
 } from "./view-dependencies/eventHandlers.js";
 import { someFrequentNouns } from "./model-dependencies/dataMyLists.js";
 import listenKeyPresses from "./view-dependencies/keyCommands.js";
@@ -29,6 +29,7 @@ class View {
         this.containerEl = document.querySelector(".container");
         this.sectionEl = document.querySelector(".section");
         this.fileInputEl = document.querySelector(".importer");
+        this.lastPracticedEl = document.querySelector(".footer__last-practiced");
     }
 
     // show an element
@@ -109,7 +110,7 @@ class View {
 
     // ================================================================================================
 
-    // read what element is selected now (when rendering quiz options)
+    // read what element is selected now (when rendering some options)
     readSelectedOption() {
         const allOptions = [...document.querySelectorAll(".prompt__option-content")];
         const selectedEl = allOptions.find((el) => el.classList.contains("active"));
@@ -166,7 +167,7 @@ class View {
 
     // removing .message
     removeMessage() {
-        if (document.querySelector(".message")) document.querySelector(".message").remove();
+        if (document.querySelector(".message")) [...document.querySelectorAll(".message")].forEach((el) => el.remove());
     }
 
     // ================================================================================================
@@ -265,8 +266,44 @@ class View {
 
     // ================================================================================================
 
-    handleBulkFormSubmission(handler) {
-        handleBulkFormSubmission(handler);
+    // handling import/file input
+    handleFileImport(handler) {
+        handleFileImport(handler);
+    }
+
+    // ================================================================================================
+
+    // updating .footer__last-practiced -- 'Last practiced' and 'Sessions today'
+    updateLastPracticed(lastPracticed, sessionsPlayedToday) {
+        let content = lastPracticed === "Never" ? lastPracticed : "...";
+
+        if (lastPracticed && lastPracticed !== "Never") {
+            const nowTime = new Date().getTime();
+            const thenTime = new Date(lastPracticed).getTime();
+            const difference = nowTime - thenTime; // in ms
+            let differenceMins = Math.floor(difference / 1000 / 60);
+            if (differenceMins === 0) content = `Just now`;
+            else content = `${differenceMins} ${differenceMins === 1 ? "minute" : "minutes"} ago`;
+
+            if (differenceMins > 59) {
+                let differenceHours = Math.floor(difference / 1000 / 60 / 60);
+                differenceMins = differenceMins - differenceHours * 60;
+                content = `${differenceHours} ${differenceHours === 1 ? "hour" : "hours"} and ${differenceMins} ${
+                    differenceMins === 1 ? "minute" : "minutes"
+                } ago`;
+                if (differenceHours > 23) {
+                    let differenceDays = Math.floor(difference / 1000 / 60 / 60 / 24);
+                    content = `${differenceDays} ${differenceDays === 1 ? "day" : "days"} ago`;
+                }
+            }
+        }
+
+        let sessionsContent = sessionsPlayedToday > 0 ? `<span>Sessions today: ${sessionsPlayedToday}</span>` : "";
+        const nowDate = new Date().getDate();
+        const thenDate = new Date(lastPracticed).getDate();
+        if (nowDate !== thenDate) sessionsContent = "";
+
+        this.lastPracticedEl.innerHTML = `<span>Last practised: ${content}</span>${sessionsContent}`;
     }
 
     // ================================================================================================

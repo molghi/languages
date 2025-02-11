@@ -3,21 +3,25 @@
 .after {
     transition: all 0.5s;
     padding-bottom: 70px;
+
     &__title {
         // margin-top: 5px;
         margin-bottom: 5px;
         display: inline-block;
     }
+
     &__sub-title {
         margin-bottom: 40px;
         line-height: 1.5;
         padding-left: 10px;
     }
+
     &__items {
         display: flex;
         flex-direction: column;
         row-gap: 20px;
     }
+
     &__item {
         position: relative;
         background-color: #111;
@@ -33,6 +37,7 @@
             // border-color: #333;
         }
     }
+
     &__item-number {
         position: absolute;
         top: 50%;
@@ -42,6 +47,7 @@
         font-size: 40px;
         color: rgba(white, 0.2);
     }
+
     &__item-row {
         display: flex;
         flex-wrap: wrap;
@@ -53,11 +59,13 @@
         &--your {
         }
     }
+
     &__item-row-title {
         // opacity: 0.5;
         // color: rgba(white, 0.5);
         color: #ccc;
     }
+
     &__item-row-value {
         span {
             display: inline-block;
@@ -67,6 +75,7 @@
             font-weight: bold;
         }
     }
+
     &__item-row-sub-title {
         display: inline-block;
         // margin-top: 5px;
@@ -78,14 +87,17 @@
             opacity: 1;
         }
     }
+
     &__item-btn-box {
         flex: 1 1 100%;
         margin-top: 10px;
     }
+
     &__item-btn {
         padding: 10px 15px;
         transition: box-shadow 0.3s;
     }
+
     &__item-btn--wrong {
         color: red;
         border-color: red;
@@ -98,6 +110,7 @@
             background-color: red !important;
         }
     }
+
     &__item-btn--hard {
         color: coral;
         border-color: coral;
@@ -110,6 +123,7 @@
             background-color: coral !important;
         }
     }
+
     &__item-btn--good {
         color: limegreen;
         border-color: limegreen;
@@ -122,6 +136,7 @@
             background-color: limegreen !important;
         }
     }
+
     &__item-btn--easy {
         color: dodgerblue;
         border-color: dodgerblue;
@@ -134,6 +149,7 @@
             background-color: dodgerblue !important;
         }
     }
+
     &__action-btn-box {
         text-align: right;
         button {

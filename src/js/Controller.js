@@ -14,6 +14,7 @@ const Visual = new View();
 import appClicksHandler from "./modules/controller-dependencies/appClicksHandler.js";
 import headerHandler from "./modules/controller-dependencies/headerHandler.js";
 import actionsHandler from "./modules/controller-dependencies/actionsHandler.js";
+import processInput from "./modules/controller-dependencies/import";
 
 // ================================================================================================
 
@@ -21,6 +22,16 @@ import actionsHandler from "./modules/controller-dependencies/actionsHandler.js"
 function init() {
     Visual.showScreen("greet"); // showing a greeting screen
     Visual.setAccentColor(Logic.getAccentColor()); // changing the accent color if it was in LS
+    const lastPracticed = Logic.getLastPracticed(); // getting the date string of Last Practised
+    const sessionsPlayedToday = Logic.getSessionsPlayedToday(); // getting how many sessions were played today
+    Visual.updateLastPracticed(lastPracticed, sessionsPlayedToday); // updating the Last Practised element in .bottom-block
+
+    Logic.startLastPracticedTimer(() => {
+        const lastPracticed = Logic.getLastPracticed(); // a timer to update Last Practised every minute
+        const sessionsPlayedToday = Logic.getSessionsPlayedToday();
+        Visual.updateLastPracticed(lastPracticed, sessionsPlayedToday);
+    });
+
     runEventListeners();
 }
 init();
@@ -35,6 +46,7 @@ function runEventListeners() {
     Visual.handleAppHoversOut(); // handle hover-outs in .app
     Visual.listenKeyPresses(keyPressHandler); // listen to when Enter is pressed (when there is .round)
     Visual.handleActionsClicks(actionsHandler); // handle clicks in .actions
+    Visual.handleFileImport(processInput); // handle file import
 }
 
 // ================================================================================================
@@ -42,7 +54,7 @@ function runEventListeners() {
 // listen to specific key presses
 function keyPressHandler(keyPressed) {
     if (keyPressed === "enter") {
-        // click "Next Round"
+        // do what: click "Next Round"
         const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase(); // getting the text of that action btn
         appClicksHandler(btnText); // "clicking"
     }
