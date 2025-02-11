@@ -1,4 +1,4 @@
-import { lingvanex_api_key, webster_api_key, webster_api_key2 } from "./config.js";
+// import { lingvanex_api_key, webster_api_key, webster_api_key2 } from "./config.js";
 
 // lingvanex
 async function fetchLangs() {
