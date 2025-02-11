@@ -5,7 +5,7 @@ import formHandler from "./formHandler.js";
 
 // handle clicks in .app -- general router function
 function appClicksHandler(clickedEl, text) {
-    console.log(clickedEl, text);
+    // console.log(clickedEl, text);
     if (text === `select language >`) {
         // do what: render another prompt: Select Language
         selectLanguage();
@@ -106,7 +106,7 @@ function beginPractice(lang) {
         Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz question
     } else {
         // means there are no words that can be practiced now, I have gone through them all, so I just show a message
-        console.log(`no words that can be practiced now, I have gone through them all`);
+        // console.log(`no words that can be practiced now, I have gone through them all`);
         Visual.clearApp(); // clearing every child element of .app
         const nextRevisionString = Logic.getNextRevisionDate(); // getting when is the next scheduled revision
         Visual.showScreen("revisions completed", nextRevisionString); // showing the message

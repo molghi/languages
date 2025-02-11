@@ -4,7 +4,7 @@ import { Visual } from "../../Controller.js";
 
 // rendering the .after block
 function renderEndScreen(currentQuizData, answersArr) {
-    console.log(currentQuizData, answersArr);
+    // console.log(currentQuizData, answersArr);
 
     Visual.removeEndScreen(); // removing before rendering (if exists)
     const div = document.createElement("div");

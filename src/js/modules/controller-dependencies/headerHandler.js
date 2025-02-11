@@ -25,7 +25,7 @@ function headerHandler(el) {
                 // `Create a practice session using the materials you've worked with before`,
                 // `Create a new practice session with fresh content from an online source`,
                 "For practicing words you have previously interacted with",
-                "For starting a fresh practice session with online content",
+                "[IN DEVELOPMENT] For starting a fresh practice session with online content",
             ],
             "Select Language >"
         ); // args: titleString, optionsArr, optionsExplainers, btnText
