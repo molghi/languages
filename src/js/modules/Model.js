@@ -28,7 +28,13 @@ import {
     topicGlueWords,
     topicBasicPhrases,
 } from "./model-dependencies/dataMyLists.js"; // already clean, what's imported
-import { fetchLangs, fetchTranslation, fetchExamplePhrase } from "./model-dependencies/api.js";
+import {
+    fetchLangs,
+    fetchTranslation,
+    fetchWebsterLearner,
+    fetchWebsterIntermediate,
+    fetchFreeDictionary,
+} from "./model-dependencies/api.js";
 import getLangsList from "./model-dependencies/getLangsList.js";
 import LS from "./model-dependencies/localStorage.js";
 import exportAsJson from "./model-dependencies/export.js";
@@ -47,6 +53,8 @@ class Model {
         sessionsPlayedToday: 0, // number of sessions played
         lastPracticedTimer: 0,
         languagePracticedNow: "",
+        quizMode: "",
+        myLanguages: {},
     };
 
     constructor() {
@@ -54,6 +62,69 @@ class Model {
         this.fetchAccentColor(); // fetching from LS
         this.fetchLastPracticed(); // fetching from LS
         this.fetchSessionsPlayedToday(); // fetching from LS
+
+        // this.fetchWebsterLearner(`electricity`);
+        // this.fetchWebsterIntermediate(`electricity`);
+        // this.fetchTranslation(`apple`);
+        // this.fetchFreeDictionary("die");
+        // this.fetcher();
+        this.getPopularLangCodes();
+    }
+
+    // ================================================================================================
+
+    async fetcher() {
+        try {
+            const res = await fetch(`https://tatoeba.org/en/api_v0/search?from=eng&query=%3Dconflict`);
+            if (!res.ok) throw new Error("Something failed...");
+            const data = await res.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    fetchWebsterLearner(word) {
+        fetchWebsterLearner(word);
+    }
+
+    fetchWebsterIntermediate(word) {
+        fetchWebsterIntermediate(word);
+    }
+
+    fetchTranslation(word, langCode) {
+        fetchTranslation(word, langCode);
+    }
+
+    // using it to fetch examples
+    fetchFreeDictionary(word) {
+        return fetchFreeDictionary(word);
+    }
+
+    async fetchExamples(dataArr) {
+        const words = dataArr.map((word) => word.replace("to ", "")); // replacing 'to ' with '' because that API only works like that
+        const results = await Promise.all(words.map((word) => fetchFreeDictionary(word))); // using Promise.all() to ensure that all promises are resolved before returning the final results -- .map alone doesn't handle async op's properly
+        const chooseRandom = (arr) => Math.floor(Math.random() * arr.length); // helper fn; returns random index of 'arr'
+        const resultsPrettified = results.map((resArr) => {
+            if (resArr.length === 0) return "";
+            else {
+                const randomIndex = chooseRandom(resArr);
+                return resArr[randomIndex];
+            }
+        });
+        return resultsPrettified;
+    }
+
+    // returns 2 arrays: translated words and translated examples
+    async fetchTranslations(arrWords, arrExamples, langCode) {
+        const arrTranslatedWords = await Promise.all(arrWords.map((word) => fetchTranslation(word, langCode)));
+        const arrTranslatedExamples = await Promise.all(
+            arrExamples.map((example) => {
+                if (example) return fetchTranslation(example, langCode);
+                else return "";
+            })
+        );
+        return [arrTranslatedWords, arrTranslatedExamples];
     }
 
     // ================================================================================================
@@ -100,8 +171,8 @@ class Model {
 
     // ================================================================================================
 
-    // sort the data from 'dataMyLists.js' and 'dataOxford.js'
-    sortData() {
+    // sort the data from 'dataOxford.js'
+    sortOxfordData() {
         const allTogether = all;
 
         // prettifying:
@@ -117,8 +188,32 @@ class Model {
         const numbers = allTogether.filter((wordString) => wordString.includes(" number")).map((str) => str.split(" ")[0]);
         const modalVerbs = allTogether.filter((wordString) => wordString.includes(" modal v.")).map((str) => str.split(" ")[0]);
 
-        // now I have sth like 7500+ words (along with duplicates)
-        // not to forget about myListVerbs, myListAdjs and all the rest
+        return [
+            ...verbs,
+            ...nouns,
+            ...adjectives,
+            ...adverbs,
+            ...prepositions,
+            ...exclamations,
+            ...determiners,
+            ...pronouns,
+            ...conjunctions,
+            ...numbers,
+            ...modalVerbs,
+        ];
+        // return [
+        //     verbs,
+        //     nouns,
+        //     adjectives,
+        //     adverbs,
+        //     prepositions,
+        //     exclamations,
+        //     determiners,
+        //     pronouns,
+        //     conjunctions,
+        //     numbers,
+        //     modalVerbs,
+        // ];
     }
 
     // ================================================================================================
@@ -126,43 +221,45 @@ class Model {
     // getting popular language codes from the api
     async getPopularLangCodes() {
         const fetched = await fetchLangs();
-        console.log(fetched.result);
         const popularLanguages = [
-            "English",
-            "Chinese",
-            "Arabic",
-            "French",
+            "English (Great Britain)",
+            "Chinese (simplified)",
+            "Hindi",
+            "Spanish (Mexico)",
+            "French (France)",
+            "Arabic (Egypt)",
+            "Bengali",
+            "Portuguese (Brazil)",
+            "Russian",
+            "Urdu",
             "German",
             "Czech",
             "Icelandic",
             "Latin",
-            "Spanish",
-            "Hindi",
-            "Bengali",
-            "Portuguese",
-            "Russian",
-            "Urdu",
             "Japanese",
             "Swahili",
             "Turkish",
             "Italian",
             "Persian",
             "Korean",
-            "Tamil",
             "Vietnamese",
             "Polish",
-            "Dutch",
             "Thai",
             "Greek",
             "Hebrew",
-            "Malay",
-            "Ukrainian",
-            "Tagalog",
-        ]; // 30 here
-        const langs = fetched.result.filter((langObj) => popularLanguages.includes(langObj.codeName.split(" ")[0]));
-        console.log(langs.map((x) => x.englishName));
-        // this.#state.popularLanguages
+        ]; // 25 here
+        const langs = fetched.result.filter((langObj) => popularLanguages.includes(langObj.englishName));
+        langs.forEach((langObj) => {
+            const langName = langObj.englishName.split(" ")[0].toLowerCase().trim();
+            const langCode = langObj.full_code;
+            this.#state.myLanguages[langName] = langCode;
+        });
     }
+
+    // ================================================================================================
+
+    // get the code of this language
+    getLangCode = (langName) => this.#state.myLanguages[langName];
 
     // ================================================================================================
 
@@ -301,6 +398,14 @@ class Model {
 
     // ================================================================================================
 
+    // setting the mode of the quiz about to be conducted: local or online
+    setMode(mode) {
+        this.#state.quizMode = mode;
+    }
+    getMode = () => this.#state.quizMode;
+
+    // ================================================================================================
+
     // setting the data for the current quiz
     setQuizWords(dataArr) {
         this.#state.currentQuizData = dataArr;
@@ -368,16 +473,35 @@ class Model {
     // ================================================================================================
 
     // updating words after submitting the Review Your Responses screen
-    updateWords(quizedWordsIds, userRatings) {
+    updateWords(quizedWordsIds, userRatings, mode) {
         console.log(quizedWordsIds, userRatings);
-        quizedWordsIds.forEach((idParam, i) => {
-            const index = this.#state.words.findIndex((entry) => entry.id === idParam);
-            this.#state.words[index].ratedAs = userRatings[i];
-            this.#state.words[index].nextRevisionDateTime = this.determineRevisionDateTime(userRatings[i]);
-        });
+        if (mode === "local") {
+            quizedWordsIds.forEach((idParam, i) => {
+                const index = this.#state.words.findIndex((entry) => entry.id === idParam);
+                this.#state.words[index].ratedAs = userRatings[i];
+                this.#state.words[index].nextRevisionDateTime = this.determineRevisionDateTime(userRatings[i]);
+            });
 
-        console.log(this.#state.words);
-        LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+            console.log(this.#state.words);
+            LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+        } else if (mode === "online") {
+            // an online session was just played -- so I add those words if I don't have them already (such words for a given language)
+            const langPure = this.#state.languagePracticedNow.split(" ")[1].toLowerCase();
+            userRatings.forEach((userRating, i) => {
+                const index = this.#state.words.findIndex(
+                    (stateWordObj) =>
+                        stateWordObj.language.toLowerCase() === langPure &&
+                        stateWordObj.word.toLowerCase() === this.#state.currentQuizData[i].translation
+                );
+                if (index >= 0) return; // means such a word for a given language already exists in my wordbase
+                // else I must add this word -- and add 'ratedAs' with 'nextRevisionDateTime'
+                this.#state.currentQuizData[i].ratedAs = userRatings[i];
+                this.#state.currentQuizData[i].nextRevisionDateTime = this.determineRevisionDateTime(userRatings[i]);
+                this.#state.words.push(this.#state.currentQuizData[i]);
+            });
+            console.log(this.#state.words);
+            LS.save(`languagesWords`, this.#state.words, "ref"); // key, value, type = "prim"
+        }
     }
 
     // ================================================================================================
@@ -446,6 +570,44 @@ class Model {
 
     // clearing the Last Practiced timer
     stopLastPracticedTimer = () => clearInterval(this.#state.lastPracticedTimer);
+
+    // ================================================================================================
+
+    // selecting 10 random English words from those word datasets that I have in js files here (no duplicates)
+    selectFromDatasets() {
+        const oxfordData = this.sortOxfordData();
+        const myData = [
+            ...myListVerbs,
+            ...myListAdjs,
+            ...someFrequentNouns,
+            ...topicFamily,
+            ...topicBody,
+            ...topicGeo,
+            ...someExpressions,
+            ...topicAnimals,
+            ...topicFoodDrinks,
+            ...topicHome,
+            ...topicClothes,
+            ...topicDirections,
+            ...topicTime,
+            ...topicMaterials,
+            ...topicNumbers,
+            ...topicReligion,
+            ...topicFrequency,
+            ...topicUrgency,
+            ...topicInformal,
+            ...topicSwearWords,
+            ...topicUnsorted,
+            ...topicPrepositions,
+            ...topicConjunctions,
+            ...topicGlueWords,
+            ...topicBasicPhrases,
+        ];
+        const giantArrayOfAllDatasets = [...oxfordData, ...myData];
+        const random10Indeces = this.getRandomTen(giantArrayOfAllDatasets.length); // getting 10 random indeces in `giantArrayOfAllDatasets`
+        const random10Words = random10Indeces.map((index) => giantArrayOfAllDatasets[index]); // getting the words at those indeces
+        return random10Words;
+    }
 
     // ================================================================================================
 }

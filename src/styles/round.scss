@@ -63,4 +63,15 @@
     &__row-value {
         display: inline;
     }
+
+    &__row-span {
+        display: block;
+        font-style: italic;
+        opacity: 0.5;
+        font-size: 13px;
+        transition: all 0.1s;
+        &:hover {
+            opacity: 1;
+        }
+    }
 }

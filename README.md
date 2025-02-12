@@ -18,4 +18,4 @@ App Functionality:
 -   Shows small, custom-made pop-ups with language-related details.
 -   Displays the last practice time and count of completed sessions.
 -   Allows one to customise the interface accent colour.
--   Online functionality is in development!
+-   Online functionality: Generates practice sessions from a large word dataset (over 7,000 words). However, please note that due to the peculiarities of machine translation, session content can sometimes be bizarre and barely relevant to the displayed word or accidental comedic gold. If that's the case, I hope it made you smile (and remember that word).

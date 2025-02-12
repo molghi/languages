@@ -13,7 +13,7 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
     const optionsHtml = optionsArr
         .map((optName, index) => {
             if (optionsExplainersArr && optionsExplainersArr.length > 0) {
-                const showClass = optionsExplainersArr[index].includes("IN DEVELOPMENT") ? " no-hover" : ""; // if its explainer contains 'IN DEVELOPMENT', it is disabled
+                const showClass = optionsExplainersArr[index].includes("IN DEVELOPMENT") ? " no-hover dimmed" : ""; // if its explainer contains 'IN DEVELOPMENT', it is disabled
                 return `<div class="prompt__option prompt__option--choice"><span class="prompt__option-content${showClass}">${optName}</span><span class="prompt__option--explainer">— ${optionsExplainersArr[index]}</span></div>`;
             } else {
                 return `<div class="prompt__option prompt__option--choice"><span class="prompt__option-content">${optName}</span></div>`;

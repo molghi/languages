@@ -19,13 +19,11 @@ function headerHandler(el) {
         Visual.clearApp(); // removing all child elements in .app
         Visual.renderPrompt(
             "Select Mode",
-            // ["From Saved", "From Online"],
-            ["Review Your Words", "New Online Session"],
+            ["Review Your Words", "New Online Session", "Practise Topics"],
             [
-                // `Create a practice session using the materials you've worked with before`,
-                // `Create a new practice session with fresh content from an online source`,
-                "For practicing words you have previously interacted with",
-                "[IN DEVELOPMENT] For starting a fresh practice session with online content",
+                "For practising words you have previously interacted with",
+                "For starting a fresh practice session with online content",
+                "[IN DEVELOPMENT] For practising words from a curated selection of topics",
             ],
             "Select Language >"
         ); // args: titleString, optionsArr, optionsExplainers, btnText

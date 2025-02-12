@@ -54,9 +54,12 @@ function handleAppClicks(handler) {
 
         if (e.target.closest(".prompt__option-action-content")) {
             // it was a click on the action button: Select Language, Begin Practice or Next Round
-            const clickedBtn = e.target.closest(".prompt__option-action-content");
+            const clickedBtn = e.target.closest(".prompt__option-action-content"); // this btn is "Select Language >"
             const text = clickedBtn.textContent.toLowerCase().trim();
-            handler(clickedBtn, text);
+            // const modeChosen = Visual.readSelectedOption();
+            const [clickedChoiceBtn, clickedChoiceBtnText] = Visual.readSelectedOption(); // this btn is either 'Practice Your Words' or 'New Online Session'
+            const modeChosen = clickedChoiceBtnText === "New Online Session" ? "online" : "local";
+            handler(clickedBtn, text, modeChosen);
         }
 
         if (e.target.closest(".form__btn--add")) {
