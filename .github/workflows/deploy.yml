@@ -27,8 +27,11 @@ jobs:
             - name: Install dependencies
               run: npm install # Install dependencies
 
-            - name: Build project
-              run: npm run build # Run build script
+            # Inject API Key and Build
+            - name: Build the project
+              env:
+                  LINGVANEX_API_KEY: ${{ secrets.LINGVANEX_API_KEY }} # Inject the secret into the build process
+              run: npm run build
 
             - name: Upload build artifact
               uses: actions/upload-pages-artifact@v3

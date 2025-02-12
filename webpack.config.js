@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
@@ -56,6 +57,9 @@ module.exports = {
             filename: "index.html",
             template: "src/template.html",
             favicon: "./src/img/favicon.ico",
+        }),
+        new webpack.DefinePlugin({
+            "process.env.LINGVANEX_API_KEY": JSON.stringify(process.env.LINGVANEX_API_KEY),
         }),
     ],
 };

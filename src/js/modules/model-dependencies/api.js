@@ -1,4 +1,4 @@
-import { lingvanex_api_key, webster_learner_api_key, webster_intermediate_api_key } from "./config.js";
+const lingvanex_api_key = process.env.LINGVANEX_API_KEY;
 
 // lingvanex
 async function fetchLangs() {
