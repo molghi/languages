@@ -22,6 +22,7 @@ import processInput from "./modules/controller-dependencies/import";
 function init() {
     Visual.showScreen("greet"); // showing a greeting screen
     Visual.setAccentColor(Logic.getAccentColor()); // changing the accent color if it was in LS
+
     const lastPracticed = Logic.getLastPracticed(); // getting the date string of Last Practised
     const sessionsPlayedToday = Logic.getSessionsPlayedToday(); // getting how many sessions were played today
     Visual.updateLastPracticed(lastPracticed, sessionsPlayedToday); // updating the Last Practised element in .bottom-block
@@ -51,10 +52,10 @@ function runEventListeners() {
 
 // ================================================================================================
 
-// listen to specific key presses
+// listening to specific key presses
 function keyPressHandler(keyPressed) {
     if (keyPressed === "enter") {
-        // do what: click "Next Round"
+        // do what: click "Next Round" programmatically
         const btnText = document.querySelector(".round__action-btn").textContent.trim().toLowerCase(); // getting the text of that action btn
         appClicksHandler(btnText); // "clicking"
     }
@@ -63,4 +64,4 @@ function keyPressHandler(keyPressed) {
 // ================================================================================================
 
 // exporting for some dependencies
-export { Logic, Visual, runEventListeners };
+export { Logic, Visual };

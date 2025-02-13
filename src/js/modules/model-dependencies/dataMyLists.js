@@ -1,4 +1,4 @@
-// HERE BELOW COULD BE DUPLICATES
+// DUPLICATES ARE POSSIBLE
 
 const myListVerbs = [
     "to be",

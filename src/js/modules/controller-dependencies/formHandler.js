@@ -8,15 +8,16 @@ function formHandler(data) {
     const elements = data.filter((el) => el.tagName !== "BUTTON"); // getting all form elements without button
     elements.forEach((el) => {
         if (el.name === "languages") formData["language"] = el.value.trim();
-        else formData[el.name] = el.value.trim(); // populating formData
+        else formData[el.name] = el.value.trim();
     });
     formData.added = new Date().toISOString();
-    formData.id = new Date().getTime();
+    formData.id = new Date().getTime(); // populating formData
 
     if (formData.hasOwnProperty("bulkAdd")) {
         // means multiple words are being added
         bulkAdd(formData);
     } else {
+        // means a single word is being added
         // checking before adding: if such 'word' already exists in my state wordbase and the 'language' is the same, do not add it
         const stateIndex = Logic.getWordsState().findIndex(
             (stateWordObj) =>
@@ -25,11 +26,11 @@ function formHandler(data) {
         ); // looking if the index is positive or negative (exists or exists not)
 
         if (stateIndex >= 0) {
-            Visual.showMessage("error", "This word is already in your word base for this language."); // showing an error message with explanation
+            Visual.showMessage("error", "This word is already in your word base for this language."); // showing an error message
         } else {
             Logic.addWord(formData); // add to state and LS
             Visual.showMessage("success", "Added successfully!"); // showing a message
-            Visual.clearFormFields(); // clear form fields
+            Visual.clearFormFields(); // clear form fields (except 'select')
             document.querySelector('form input[type="text"]').focus(); // focus first input
         }
     }
@@ -39,7 +40,7 @@ function formHandler(data) {
 
 // dependency of 'formHandler' -- adding multiple words
 function bulkAdd(formData) {
-    formData.words = formData.bulkAdd.split("\n"); // getting an array of word-lines (strings, each representing one word entry)
+    formData.words = formData.bulkAdd.split("\n"); // getting an array of so-called word-lines (strings, each representing one word entry)
     const wordLineLengths = formData.words.map((lineString) => lineString.split("|").length); // counting the length of each wordLine arrayed
     const everyLineIsCorrectLength = wordLineLengths.every((memberLength) => memberLength === 8); // is every line the needed length or not? (it must be 8, strictly)
 
@@ -75,7 +76,7 @@ function bulkAdd(formData) {
         ]; // this order is strict
         const split = wordLine.split("|").map((x) => x.trim());
         const obj = {
-            [categories[0]]: split[0] === "_" || split[0] === "-" ? "" : split[0],
+            [categories[0]]: split[0] === "_" || split[0] === "-" ? "" : split[0], // if it is '_' or '-', return an empty string; otherwise return what's there
             [categories[1]]: split[1] === "_" || split[1] === "-" ? "" : split[1],
             [categories[2]]: split[2] === "_" || split[2] === "-" ? "" : split[2],
             [categories[3]]: split[3] === "_" || split[3] === "-" ? "" : split[3],
@@ -89,7 +90,7 @@ function bulkAdd(formData) {
         counter += 1;
         return obj;
     });
-    let amountOfWords = words.length; // but among these could also be those that already exist in my state
+    let amountOfWords = words.length; // among these could also be those that already exist in my state
     // now 'words' is an array of word objects, ready to be pushed to state/LS
     words.forEach((wordObj) => {
         // checking before adding: if such 'word' already exists in my state wordbase and the 'language' is the same, I do not add it
@@ -99,7 +100,7 @@ function bulkAdd(formData) {
                 stateWordObj.language.trim().toLowerCase() === wordObj.language.toLowerCase()
         ); // looking if the index is positive or negative (exists or exists not)
         if (stateIndex < 0) Logic.addWord(wordObj); // if exists not, add it to state and LS
-        else amountOfWords -= 1; // for the visual message
+        else amountOfWords -= 1; // decrementing for the message
     });
     Visual.showMessage("success", `${amountOfWords} ${amountOfWords === 1 ? "word" : "words"} added successfully!`); // showing a message
     document.querySelector(".form__textarea").value = ""; // clear textarea input

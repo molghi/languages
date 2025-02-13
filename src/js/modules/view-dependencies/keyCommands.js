@@ -1,11 +1,9 @@
-import { Visual } from "../../Controller.js";
-
 function listenKeyPresses(handler) {
     document.addEventListener("keydown", function (e) {
         // 'keypress' is deprecated
 
         if (e.code === "Enter") {
-            if (!document.querySelector(".round")) return;
+            if (!document.querySelector(".round")) return; // Enter can only be pressed if a round is rendered
             handler("enter");
         }
     });

@@ -3,7 +3,7 @@ import languagesQuickInfo from "./languagesQuickInfo.js";
 
 // ================================================================================================
 
-// rendering a quick popup with the language info
+// rendering a quick hover-activated popup with the language info
 function renderQuickPopup(lang, hoveredItem) {
     if (!lang || !hoveredItem) return;
     Visual.removePopup(); // removing before rendering (if exists)
@@ -13,7 +13,7 @@ function renderQuickPopup(lang, hoveredItem) {
     const div = document.createElement("div");
     div.classList.add("lang-info", "invisible");
 
-    div.innerHTML = `<div class="lang-info__title">Quick Info</div>` + data.replaceAll("\n", "<br>");
+    div.innerHTML = `<div class="lang-info__title">Quick Info</div>` + data.replaceAll("\n", "<br>"); // populating with content
 
     Visual.containerEl.appendChild(div);
 
@@ -24,7 +24,7 @@ function renderQuickPopup(lang, hoveredItem) {
 
 // ================================================================================================
 
-// rendering a message
+// rendering a quick message
 function renderMessage(type, text, removeAfterMs) {
     Visual.removeMessage(); // removing before rendering (if exists)
 
@@ -46,4 +46,17 @@ function renderMessage(type, text, removeAfterMs) {
 
 // ================================================================================================
 
-export { renderQuickPopup, renderMessage };
+// rendering a small spinner
+function renderSpinner(el, position) {
+    Visual.removeSpinner(); // removing before rendering (if exists)
+    const div = document.createElement("div");
+    div.classList.add("spinner");
+    const styleClass = position ? ` spinner-moved` : "";
+    div.innerHTML = `<span class="loader${styleClass}"></span>`;
+    if (position) el.style.position = "relative"; //, div.classList.add(styleClass.trim());
+    el.appendChild(div);
+}
+
+// ================================================================================================
+
+export { renderQuickPopup, renderMessage, renderSpinner };

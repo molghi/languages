@@ -2,8 +2,8 @@ import { Visual } from "../../Controller.js";
 
 // ================================================================================================
 
+// rendering .prompt
 function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
-    // console.log(titleString, optionsArr, optionsExplainersArr, btnText);
     Visual.removePrompt(); // removing before rendering (if exists)
 
     const div = document.createElement("div");
@@ -16,7 +16,8 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
                 const showClass = optionsExplainersArr[index].includes("IN DEVELOPMENT") ? " no-hover dimmed" : ""; // if its explainer contains 'IN DEVELOPMENT', it is disabled
                 return `<div class="prompt__option prompt__option--choice"><span class="prompt__option-content${showClass}">${optName}</span><span class="prompt__option--explainer">— ${optionsExplainersArr[index]}</span></div>`;
             } else {
-                return `<div class="prompt__option prompt__option--choice"><span class="prompt__option-content">${optName}</span></div>`;
+                const englishClass = optName.includes("English") ? " no-hover dimmed" : ""; // if it is "English", it is disabled
+                return `<div class="prompt__option prompt__option--choice"><span class="prompt__option-content${englishClass}">${optName}</span></div>`;
             }
         })
         .join("");
@@ -27,6 +28,7 @@ function renderPrompt(titleString, optionsArr, optionsExplainersArr, btnText) {
     let messageHtml = "";
     let btnClass = "";
     if (titleString === "Select Language" && optionsArr.length === 0) {
+        // if it is Select Language screen and there are no options to render (in local session), show a message and hide the btn
         messageHtml = `<div class="prompt__message">Nothing here yet because you haven't added any words to practise.</div>`;
         btnClass = ` hidden`;
     }

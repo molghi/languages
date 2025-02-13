@@ -1,11 +1,11 @@
 import { Visual, Logic } from "../../Controller.js";
 import formHandler from "./formHandler.js";
+import beginOnlineSession from "./beginOnlineSession.js";
 
 // ================================================================================================
 
 // handle clicks in .app -- general router function
 function appClicksHandler(clickedEl, text, modeChosen) {
-    // console.log(clickedEl, text);
     if (text === `select language >`) {
         // do what: render another prompt: Select Language
         Logic.setMode(modeChosen); // setting if this is an online or local session
@@ -43,7 +43,7 @@ function appClicksHandler(clickedEl, text, modeChosen) {
         submitResults();
     }
     if (clickedEl === `another yes`) {
-        // do what: generate another practice session
+        // do what: generate another practice session (it was a click on Yes to the question Another Session?)
         const languagePractised = Logic.getLanguagePracticedNow(); // getting the lang with which I just practised
         beginPractice(languagePractised);
     }
@@ -59,13 +59,12 @@ function appClicksHandler(clickedEl, text, modeChosen) {
 
 // dependency of 'appClicksHandler' -- runs when you click on 'Select Language >'
 function selectLanguage() {
-    // render another prompt: Select Language
     const [selectedEl, selectedElText] = Visual.readSelectedOption(); // getting what element was selected on the screen
-    const selectedChoice = selectedElText; // either From Saved or From Online
+    const selectedChoice = selectedElText;
 
     if (selectedChoice === "Review Your Words") {
         // I have chosen to practice with the words I have interacted with before
-        const langsAdded = Logic.getAddedLangs(); // based on all words I have added, I get all languages I have added -- only those must be shown, not all 30
+        const langsAdded = Logic.getAddedLangs(); // based on all words I have added, I get all languages I have added -- only those must be shown, not all 25
         const languages = Logic.getLangsList("pure"); // getting the list of lang names
         const langsFiltered = languages.filter((langString) => {
             const justName = langString.split(" ")[1].toLowerCase();
@@ -77,7 +76,7 @@ function selectLanguage() {
     } else if (selectedChoice === "New Online Session") {
         // I have chosen to practice with the words freshly fetched online
         const languages = Logic.getLangsList(); // getting the list of lang names and country flags
-        Visual.renderPrompt("Select Language", languages, [], "Begin Practice >"); // rendering the language choices screen
+        Visual.renderPrompt("Select Language", languages, [], "Begin Practice >"); // rendering the language choices screen, all 25 langs
     }
 }
 
@@ -85,13 +84,11 @@ function selectLanguage() {
 
 // dependency of 'appClicksHandler' -- runs when you click on 'Begin Practice >'
 function beginPractice(lang) {
-    const mode = Logic.getMode();
-    console.log(mode);
+    const mode = Logic.getMode(); // getting mode: local or online
 
     let [selectedEl, selectedElText] = Visual.readSelectedOption(); // getting what element was selected on the screen
     if (lang) selectedElText = lang;
     if (!selectedElText) return;
-    console.log(selectedElText);
 
     Logic.setLanguagePracticedNow(selectedElText); // setting the language about to be practised now
     const selectedLanguage = selectedElText; // language that was chosen: emoji and text capitalised
@@ -99,19 +96,22 @@ function beginPractice(lang) {
 
     if (mode === "local") {
         // means this will be a local session: with the words a user has already interacted with
+        Visual.removePopup(); // removing my custom-made pop-ups just in case
+        Logic.resetAnswers(); // resetting after the last quiz (if there were any)
         beginLocalSession(justLangName);
     } else if (mode === "online") {
         // means this will be an online session: with the words and examples fetched from elsewhere
+        Logic.resetAnswers();
         beginOnlineSession();
     }
 }
 
 // ================================================================================================
 
-// dependency of 'beginPractice' -- begins a local review session
+// dependency of 'beginPractice' -- commencing a local review session
 function beginLocalSession(justLangName) {
     const practiceWords = Logic.getQuizWords(justLangName); // get 10 or less word objs from state, filtered by this language; either random or shuffled
-    console.log(practiceWords);
+
     if (practiceWords.length > 0) {
         // means there are words that can be practiced now, according to SRS, so I render the quiz
         Logic.setQuizWords(practiceWords); // setting words/rounds for this quiz session; number of words = number of rounds
@@ -120,77 +120,14 @@ function beginLocalSession(justLangName) {
         const roundsNumber = Logic.getRoundsNumber(); // getting how many rounds there'll be
         const roundCounter = Logic.getRoundCounter(); // getting the value of now-round
         const wordObjNow = Logic.getThisQuizData()[roundCounter]; // getting the data for the first quiz question
-        Logic.incrementRoundCounter();
+        Logic.incrementRoundCounter(); // incrementing the round counter
         Visual.clearApp(); // clearing every child element of .app
-        Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz question
+        Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // rendering quiz question
     } else {
         // means there are no words that can be practiced now, I have gone through them all, so I just show a message
         Visual.clearApp(); // clearing every child element of .app
         const nextRevisionString = Logic.getNextRevisionDate(); // getting when is the next scheduled revision
         Visual.showScreen("revisions completed", nextRevisionString); // showing the message
-    }
-}
-
-// ================================================================================================
-
-// dependency of 'beginPractice'
-async function beginOnlineSession() {
-    const tenRandomWords = Logic.selectFromDatasets(); // an array of strings: 10 random English words from my long word datasets (duplicates are possible)
-    const wordsFiltered = tenRandomWords
-        .map((word) => word.replace("to ", "").trim())
-        .filter((word) => !word.includes(" "))
-        .filter((item) => /^[A-Za-z]+$/.test(item))
-        .map((word) => word.toLowerCase()); // removing those items that have more than 2 whitespaces and non-letter characters because Free Dict API does not allow such queries
-    const wordsToTranslate = tenRandomWords
-        .filter((word) => word.lastIndexOf(" ") === 2 || word.lastIndexOf(" ") === -1)
-        .filter((item) => /^[A-Za-z]+( [A-Za-z]+)?$/.test(item))
-        .map((word) => word.toLowerCase()); // I thought preserving "to " in verbs would be better for translatations but no, it's even weirder: to create was translated as chtoby sozdat
-    const examplesWithThem = await Logic.fetchExamples(wordsFiltered);
-    const language = Logic.getLanguagePracticedNow().split(" ")[1].toLowerCase(); // language to be practised now
-    const languageCode = Logic.getLangCode(language); // getting the code of this lang (specified by the API)
-    const [translatedWords, translatedExamples] = await Logic.fetchTranslations(wordsFiltered, examplesWithThem, languageCode); // fetching translations
-
-    let counter = 1;
-    // forming word entries:
-    const wordEntries = wordsFiltered.map((translation, i) => {
-        const obj = {};
-        const targetExample = !translatedExamples[i].result
-            ? ""
-            : `${translatedExamples[i].result} <span class="round__row-span">(${translatedExamples[i].targetTransliteration})</span>`;
-        const theNote = !translatedExamples[i].result
-            ? ""
-            : `(Content fetched online can be a bit off...) <span class="round__row-span">If it is very off, I hope it made you smile ;)</span>`;
-        obj.added = new Date().toISOString();
-        obj.definition = "";
-        obj.exampleTarget = targetExample;
-        obj.exampleTranslation = examplesWithThem[i];
-        obj.id = new Date().getTime() + `.${counter}`;
-        obj.language = language;
-        obj.note = theNote;
-        obj.pronunciation = translatedWords[i].targetTransliteration;
-        obj.translation = translation;
-        obj.word = translatedWords[i].result;
-        counter += 1;
-        return obj;
-    });
-
-    if (wordEntries.length > 0) {
-        // means there are words that can be practiced now, according to SRS, so I render the quiz
-        Logic.setQuizWords(wordEntries); // setting words/rounds for this quiz session; number of words = number of rounds
-        Logic.setRoundsNumber(wordEntries.length); // setting how many rounds there'll be
-        Logic.resetRoundCounter(); // resetting the current round counter
-        const roundsNumber = Logic.getRoundsNumber(); // getting how many rounds there'll be
-        const roundCounter = Logic.getRoundCounter(); // getting the value of now-round
-        const wordObjNow = Logic.getThisQuizData()[roundCounter]; // getting the data for the first quiz question
-        Logic.incrementRoundCounter();
-        Visual.clearApp(); // clearing every child element of .app
-        Visual.renderRound(wordObjNow, roundsNumber, roundCounter); // render quiz question
-    } else {
-        // means there are no words that can be practiced now, I have gone through them all, so I just show a message
-        Visual.clearApp(); // clearing every child element of .app
-        console.log(`I AM SORRY BUT THIS FETCH WAS UNSUCCESSFUL. TRY AGAIN LATER.`);
-        // const nextRevisionString = Logic.getNextRevisionDate(); // getting when is the next scheduled revision
-        // Visual.showScreen("revisions completed", nextRevisionString); // showing the message
     }
 }
 
@@ -211,9 +148,9 @@ function nextRound() {
         const roundCounter = Logic.getRoundCounter(); // get the now-round number
         let isLastRound = false;
         if (roundCounter === roundsNumber - 1) isLastRound = true; // if it's the last round, the btn changes to 'Finish Session'
-        const wordObjNow = Logic.getThisQuizData()[roundCounter]; // quiz data to render
-        Logic.incrementRoundCounter();
-        Visual.renderRound(wordObjNow, roundsNumber, roundCounter, isLastRound); // render quiz question
+        const wordObjNow = Logic.getThisQuizData()[roundCounter]; // getting quiz data to render
+        Logic.incrementRoundCounter(); // incrementing the round counter
+        Visual.renderRound(wordObjNow, roundsNumber, roundCounter, isLastRound); // rendering quiz question
     }
 }
 
@@ -222,12 +159,11 @@ function nextRound() {
 // dependency of 'appClicksHandler'
 function finishSession() {
     const inputEl = document.querySelector(".round input");
-    Logic.pushAnswer(inputEl.value); // registering answer
+    Logic.pushAnswer(inputEl.value); // registering the last answer
     Logic.resetRoundCounter(); // resetting the current round counter
-    Visual.clearApp();
-    const answersArr = Logic.getAnswers(); // getting all answers
-    const currentQuizData = Logic.getThisQuizData(); // getting the quiz questions data
-    console.log(currentQuizData, answersArr);
+    Visual.clearApp(); // removing every child of .app
+    const answersArr = Logic.getAnswers(); // getting all user answers (arr)
+    const currentQuizData = Logic.getThisQuizData(); // getting all quiz questions data
     Visual.renderEndScreen(currentQuizData, answersArr); // rendering the .after block
 }
 
@@ -241,17 +177,17 @@ function submitResults() {
     ).length; // getting the number of btns with .active class
 
     if (questionsNumber !== checkedBtnsNum) {
-        Visual.showMessage("error", `You haven't rated your knowledge in each question yet`);
+        Visual.showMessage("error", `You haven't rated your knowledge for each question yet`);
     } else {
         const [quizedWordsIds, userRatings] = Visual.getUserRated(); // getting 2 arrays: quiz words ids and all responses to Rate Your Knowledge for each quiz question
-        const mode = Logic.getMode();
-        Logic.updateWords(quizedWordsIds, userRatings, mode); // updating in state and LS (setting next revision dates)
-        Visual.clearApp();
+        const mode = Logic.getMode(); // mode: local or online
+        Logic.updateWords(quizedWordsIds, userRatings, mode); // updating in state and LS (setting next revision dates) -- if mode was online, some of those words must also be pushed to state/LS
+        Visual.clearApp(); // clearing .app
         Logic.setLastPracticed(new Date().toISOString()); // setting when I practiced last
         Logic.setSessionsPlayedToday(); // incrementing the number of sessions played today
-        const lastPracticed = Logic.getLastPracticed(); // getting data to update Last Practiced element
-        const sessionsPlayedToday = Logic.getSessionsPlayedToday(); // getting data to update Last Practiced element
-        Visual.updateLastPracticed(lastPracticed, sessionsPlayedToday);
+        const lastPracticed = Logic.getLastPracticed(); // getting data to update Last Practiced element (1)
+        const sessionsPlayedToday = Logic.getSessionsPlayedToday(); // getting data to update Last Practiced element (2)
+        Visual.updateLastPracticed(lastPracticed, sessionsPlayedToday); // updating Last Practiced element
         Visual.showScreen("uponSubmit"); // showing a message screen/block: "Review submitted! Another session?"
     }
 }

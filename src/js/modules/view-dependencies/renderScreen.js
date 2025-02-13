@@ -2,12 +2,13 @@ import { Visual } from "../../Controller.js";
 
 // ================================================================================================
 
+// showing .greet-screen
 function showScreen(type, nextRevisionString) {
     Visual.removeGreetScreen(); // removing before rendering (if exists)
 
     const div = document.createElement("div");
     div.classList.add("greet-screen", "invisible", "moved-left");
-    let html;
+    let html = "";
 
     // populating with content:
     if (type === `greet`) {
@@ -18,6 +19,8 @@ function showScreen(type, nextRevisionString) {
         html = returnScreenHtml(`uponSubmit`);
     } else if (type === "revisions completed") {
         html = returnScreenHtml("revisions completed", nextRevisionString);
+    } else if (type === "online failed") {
+        html = returnScreenHtml("online failed");
     }
 
     div.innerHTML = html;
@@ -30,6 +33,7 @@ function showScreen(type, nextRevisionString) {
 
 // ================================================================================================
 
+// dependency of 'showScreen' -- returns content to show
 function returnScreenHtml(type, nextRevisionString) {
     let result;
     const chooseRandom = (arr) => Math.floor(Math.random() * arr.length); // helper fn; returns random index of 'arr'
@@ -65,6 +69,9 @@ function returnScreenHtml(type, nextRevisionString) {
     } else if (type === `revisions completed`) {
         result = `<div class="greet-screen__title app-title">All Revisions Completed!</div>
 <div class="greet-screen__sub-title">You have reviewed all your words for this language for now.<br>The next scheduled revision is not due yet.<br>You may add new words to practise now or return later.<br><span class="next-revision">Next revision: ${nextRevisionString}</span></div>`;
+    } else if (type === `online failed`) {
+        result = `<div class="greet-screen__title app-title">Something Went Wrong...</div>
+<div class="greet-screen__sub-title">Apologies, but this online session was unsuccessful. Please try again later.<span style="opacity: 1; font-size: 15px">Tut mir leid! Désolé! Duìbuqǐ! Aasif! Izvinyayus! Ignosce! Fyrirgefðu!</span></div>`;
     }
 
     return result;

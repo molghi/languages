@@ -5,15 +5,24 @@
     padding-bottom: 70px;
 
     &__title {
-        // margin-top: 5px;
         margin-bottom: 5px;
         display: inline-block;
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 24px;
+        }
     }
 
     &__sub-title {
         margin-bottom: 40px;
         line-height: 1.5;
         padding-left: 10px;
+        @media (max-width: #{initial.$md2}px) {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 12px;
+        }
     }
 
     &__items {
@@ -29,12 +38,13 @@
         display: flex;
         flex-direction: column;
         row-gap: 10px;
-        // border: 1px solid transparent;
         transition: box-shadow 0.3s;
         &:hover {
             background-color: #161616;
             box-shadow: 0 0 10px #555;
-            // border-color: #333;
+        }
+        @media (max-width: #{initial.$md3}px) {
+            padding: 10px;
         }
     }
 
@@ -46,6 +56,13 @@
         font-weight: bold;
         font-size: 40px;
         color: rgba(white, 0.2);
+
+        @media (max-width: 1130px) {
+            left: initial;
+            right: 5px;
+            top: 5px;
+            transform: none;
+        }
     }
 
     &__item-row {
@@ -58,16 +75,21 @@
         }
         &--your {
         }
+
+        @media (max-width: #{initial.$md2}px) {
+            font-size: 14px;
+        }
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 12px;
+        }
     }
 
     &__item-row-title {
-        // opacity: 0.5;
-        // color: rgba(white, 0.5);
         color: #ccc;
     }
 
     &__item-row-value {
-        span {
+        .after__item-word {
             display: inline-block;
             background-color: var(--accent);
             color: var(--bg);
@@ -78,13 +100,14 @@
 
     &__item-row-sub-title {
         display: inline-block;
-        // margin-top: 5px;
-        // flex: 1 1 100%;
         font-size: 13px;
         opacity: 0.2;
         font-style: italic;
         &:hover {
             opacity: 1;
+        }
+        @media (max-width: #{initial.$md2}px) {
+            display: none;
         }
     }
 

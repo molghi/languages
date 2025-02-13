@@ -93,9 +93,9 @@ $minwidth: 320px;
 $mw: 1000; // the width of the content, the container width
 
 $md1: $mw + 12; // 1st breakpoint
-$md2: 992.98; // for tablets, 1024х768px is a size of a little PC monitor or iPad
-$md3: 767.98; // for large phones; less than 768px is the hamburger menu time
-$md4: 479.98; // for small phones
+$md2: 767.98; // for tablets, 1024х768px is a size of a little PC monitor or iPad
+$md3: 479.98; // for large phones; less than 768px is the hamburger menu time
+// $md4: 479.98; // for small phones
 
 // =============================================================================================
 
@@ -113,11 +113,11 @@ $md4: 479.98; // for small phones
     position: relative;
 
     @media (max-width: $md1+px) {
-        max-width: 970px;
+        max-width: 750px;
     }
 
     @media (max-width: $md2+px) {
-        max-width: 750px;
+        max-width: 460px;
     }
 
     @media (max-width: $md3+px) {
@@ -128,6 +128,9 @@ $md4: 479.98; // for small phones
 
 .app {
     flex-grow: 1;
+    @media (max-width: $md3+px) {
+        padding-bottom: 100px;
+    }
 }
 
 // =============================================================================================

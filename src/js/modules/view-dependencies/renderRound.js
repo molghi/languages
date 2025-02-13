@@ -2,9 +2,9 @@ import { Visual } from "../../Controller.js";
 
 // ================================================================================================
 
+// rendering .round
 function renderRound(wordObj, rounds, currentRound, isLastRound) {
-    console.log(wordObj, rounds, currentRound, isLastRound);
-    if (!wordObj) return console.log(`no round info to render`);
+    if (!wordObj) return;
 
     Visual.removeRound(); // removing before rendering (if exists)
     const div = document.createElement("div");

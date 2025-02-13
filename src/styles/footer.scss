@@ -1,0 +1,28 @@
+@use "./initial";
+
+.footer {
+    &__column {
+        padding: 20px 0;
+        opacity: 0.3;
+        font-size: 14px;
+        transition: all 0.1s;
+        &:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 12px;
+        }
+    }
+
+    &__last-practiced {
+        display: flex;
+        align-items: center;
+        column-gap: 70px;
+
+        @media (max-width: #{initial.$md2}px) {
+            flex-wrap: wrap;
+            row-gap: 10px;
+        }
+    }
+}

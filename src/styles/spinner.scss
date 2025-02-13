@@ -1,0 +1,40 @@
+@use "./initial";
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    position: absolute;
+    top: 0;
+    right: 110%;
+    width: 44px;
+    height: 44px;
+    border: 5px dotted var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+    animation: rotation 2s linear infinite;
+
+    @media (max-width: #{initial.$md3}px) {
+        top: initial;
+        bottom: 140%;
+        right: initial;
+        left: 45%;
+        transform: translateX(-45%);
+    }
+}
+
+.spinner-moved {
+    position: absolute;
+    top: initial;
+    right: initial;
+    left: 10px;
+    bottom: -100px;
+    width: 60px;
+    height: 60px;
+}

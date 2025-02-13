@@ -3,7 +3,7 @@ import { renderQuickPopup } from "./renderMethods.js";
 
 // ================================================================================================
 
-// handle clicks in .header
+// handle clicks in .header -- router function
 function handleHeaderClicks(handler) {
     Visual.headerBlock.addEventListener("click", function (e) {
         if (e.target.closest(".header__btn")) {
@@ -43,23 +43,22 @@ function handleHeaderClicks(handler) {
 
 // ================================================================================================
 
-// handle clicks in .app
+// handle clicks in .app -- router function
 function handleAppClicks(handler) {
     Visual.appBlock.addEventListener("click", function (e) {
         if (e.target.closest(".prompt__option--choice .prompt__option-content")) {
             // it was a click on an option of the rendered prompt block
             const clickedEl = e.target.closest(".prompt__option--choice .prompt__option-content");
-            Visual.makeActive(clickedEl, `.prompt__option--choice .prompt__option-content`, "glowing");
+            Visual.makeActive(clickedEl, `.prompt__option--choice .prompt__option-content`, "glowing"); // adding classes to it: 'active' and 'glowing'
         }
 
         if (e.target.closest(".prompt__option-action-content")) {
             // it was a click on the action button: Select Language, Begin Practice or Next Round
             const clickedBtn = e.target.closest(".prompt__option-action-content"); // this btn is "Select Language >"
-            const text = clickedBtn.textContent.toLowerCase().trim();
-            // const modeChosen = Visual.readSelectedOption();
+            const clickedBtnText = clickedBtn.textContent.toLowerCase().trim();
             const [clickedChoiceBtn, clickedChoiceBtnText] = Visual.readSelectedOption(); // this btn is either 'Practice Your Words' or 'New Online Session'
             const modeChosen = clickedChoiceBtnText === "New Online Session" ? "online" : "local";
-            handler(clickedBtn, text, modeChosen);
+            handler(clickedBtn, clickedBtnText, modeChosen);
         }
 
         if (e.target.closest(".form__btn--add")) {
@@ -68,7 +67,7 @@ function handleAppClicks(handler) {
         }
 
         if (e.target.closest(".form--add .form__btn--bulk")) {
-            // it was a click on 'Add Multiple' btn -- show a form to add many words at once
+            // it was a click on 'Add Multiple' btn -- now must show a form to add many words at once
             handler("bulk add");
         }
 
@@ -100,7 +99,7 @@ function handleAppClicks(handler) {
 // ================================================================================================
 
 // handle hover-ins in .app
-function handleAppHoversIn(handler) {
+function handleAppHoversIn() {
     Visual.appBlock.addEventListener("mouseover", function (e) {
         if (e.target.closest(".prompt__option")) {
             const hoveredItem = e.target.closest(".prompt__option");
@@ -113,7 +112,7 @@ function handleAppHoversIn(handler) {
 // ================================================================================================
 
 // handle hover-outs in .app
-function handleAppHoversOut(handler) {
+function handleAppHoversOut() {
     Visual.appBlock.addEventListener("mouseout", function (e) {
         if (e.target.closest(".prompt__option")) {
             Visual.removePopup(); // removing quick info popup
@@ -137,7 +136,6 @@ function handleFormSubmission(handler) {
 function handleActionsClicks(handler) {
     Visual.sectionEl.addEventListener("click", function (e) {
         if (e.target.closest(".actions__action")) {
-            // it was a click in .actions
             const clickedElText = e.target.textContent.trim().toLowerCase();
             handler(clickedElText);
         }

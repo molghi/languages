@@ -1,4 +1,4 @@
-// info for my custom pop-up block/window
+// info about 25 languages available in my app; for my custom, hover-activated pop-up
 
 const languagesQuickInfo = {
     en: `<span>Speakers:</span> Approximately 1.5 billion.\n<span>Countries:</span> United States, United Kingdom, Canada, Australia.\n<span>Family:</span> Indo-European, Germanic.\n<span>Note:</span> Emerged as a global lingua franca during the British Empire's expansion and was further solidified by the United States' cultural and economic influence in the 20th century. Evolved from Old English, heavily influenced by Norman French and Latin, resulting in a unique vocabulary and grammar that set it apart from other Germanic languages.`,

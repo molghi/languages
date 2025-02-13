@@ -26,16 +26,31 @@
         font-size: 30px;
         margin-bottom: 30px;
         font-style: italic;
+
+        @media (max-width: #{initial.$md2}px) {
+            font-size: 28px;
+        }
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 22px;
+        }
     }
 
     &__word {
         display: inline-block;
         margin-bottom: 40px;
+
+        @media (max-width: #{initial.$md2}px) {
+            font-size: 26px;
+        }
+        @media (max-width: #{initial.$md3}px) {
+            font-size: 22px;
+        }
     }
 
     &__input {
         margin-top: 40px;
         margin-bottom: 50px;
+
         input {
             width: 100%;
         }

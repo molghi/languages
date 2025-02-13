@@ -1,7 +1,7 @@
 // View is responsible for everything that happens on the screen: rendering and all visual interactions with any elements
 
 // importing dependencies:
-import { renderQuickPopup, renderMessage } from "./view-dependencies/renderMethods.js";
+import { renderQuickPopup, renderMessage, renderSpinner } from "./view-dependencies/renderMethods.js";
 import { renderAddForm, renderAddManyForm } from "./view-dependencies/renderAddForm.js";
 import renderRound from "./view-dependencies/renderRound.js";
 import renderPrompt from "./view-dependencies/renderPrompt.js";
@@ -18,6 +18,7 @@ import {
 } from "./view-dependencies/eventHandlers.js";
 import { someFrequentNouns } from "./model-dependencies/dataMyLists.js";
 import listenKeyPresses from "./view-dependencies/keyCommands.js";
+import updateLastPracticed from "./view-dependencies/updateLastPracticed.js";
 
 // ===========================================================================================================================================
 
@@ -31,12 +32,6 @@ class View {
         this.fileInputEl = document.querySelector(".importer");
         this.lastPracticedEl = document.querySelector(".footer__last-practiced");
     }
-
-    // show an element
-    show = (el) => el.classList.remove("hidden");
-
-    // hide an element
-    hide = (el) => el.classList.add("hidden");
 
     // ================================================================================================
 
@@ -151,7 +146,7 @@ class View {
 
     // ================================================================================================
 
-    // handle submission of the Add Word form
+    // handle submission of the Add form
     handleFormSubmission(handler) {
         handleFormSubmission(handler);
     }
@@ -172,7 +167,7 @@ class View {
 
     // ================================================================================================
 
-    // clearing the inputs of the Add Word form
+    // clearing the inputs of the Add Word form -- all except select
     clearFormFields() {
         const formElsArr = [...document.querySelector("form").elements];
         formElsArr.forEach((el) => {
@@ -275,35 +270,21 @@ class View {
 
     // updating .footer__last-practiced -- 'Last practiced' and 'Sessions today'
     updateLastPracticed(lastPracticed, sessionsPlayedToday) {
-        let content = lastPracticed === "Never" ? lastPracticed : "...";
+        updateLastPracticed(lastPracticed, sessionsPlayedToday);
+    }
 
-        if (lastPracticed && lastPracticed !== "Never") {
-            const nowTime = new Date().getTime();
-            const thenTime = new Date(lastPracticed).getTime();
-            const difference = nowTime - thenTime; // in ms
-            let differenceMins = Math.floor(difference / 1000 / 60);
-            if (differenceMins === 0) content = `Just now`;
-            else content = `${differenceMins} ${differenceMins === 1 ? "minute" : "minutes"} ago`;
+    // ================================================================================================
 
-            if (differenceMins > 59) {
-                let differenceHours = Math.floor(difference / 1000 / 60 / 60);
-                differenceMins = differenceMins - differenceHours * 60;
-                content = `${differenceHours} ${differenceHours === 1 ? "hour" : "hours"} and ${differenceMins} ${
-                    differenceMins === 1 ? "minute" : "minutes"
-                } ago`;
-                if (differenceHours > 23) {
-                    let differenceDays = Math.floor(difference / 1000 / 60 / 60 / 24);
-                    content = `${differenceDays} ${differenceDays === 1 ? "day" : "days"} ago`;
-                }
-            }
-        }
+    // removing a small spinner
+    removeSpinner() {
+        if (document.querySelector(".spinner")) document.querySelector(".spinner").remove();
+    }
 
-        let sessionsContent = sessionsPlayedToday > 0 ? `<span>Sessions today: ${sessionsPlayedToday}</span>` : "";
-        const nowDate = new Date().getDate();
-        const thenDate = new Date(lastPracticed).getDate();
-        if (nowDate !== thenDate) sessionsContent = "";
+    // ================================================================================================
 
-        this.lastPracticedEl.innerHTML = `<span>Last practised: ${content}</span>${sessionsContent}`;
+    // rendering a small spinner
+    renderSpinner(el, position) {
+        renderSpinner(el, position);
     }
 
     // ================================================================================================

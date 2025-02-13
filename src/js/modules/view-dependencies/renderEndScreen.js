@@ -2,16 +2,14 @@ import { Visual } from "../../Controller.js";
 
 // ================================================================================================
 
-// rendering the .after block
+// rendering .after
 function renderEndScreen(currentQuizData, answersArr) {
-    // console.log(currentQuizData, answersArr);
-
     Visual.removeEndScreen(); // removing before rendering (if exists)
     const div = document.createElement("div");
     div.classList.add("after", "invisible");
 
     // getting html, part 1
-    const itemsHtml = returnAfterHtml(currentQuizData, answersArr);
+    const itemsHtml = returnAfterHtml(currentQuizData, answersArr); // getting the questions html
 
     // getting html, part 2
     div.innerHTML = `<div class="after__title app-title">Review Your Responses</div>
@@ -32,38 +30,38 @@ function renderEndScreen(currentQuizData, answersArr) {
 
 // ================================================================================================
 
-// dependency of 'renderEndScreen'
+// dependency of 'renderEndScreen' -- getting the questions html
 function returnAfterHtml(currentQuizData, answersArr) {
     return answersArr.map((answer, i) => {
-        let exampleTargetHtml = currentQuizData[i].exampleTarget
+        let exampleTargetHtml = currentQuizData[i]?.exampleTarget
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Example sentence:</div>
                 <div class="after__item-row-value">${currentQuizData[i].exampleTarget}</div>
             </div>`
             : "";
 
-        let exampleTranslationHtml = currentQuizData[i].exampleTranslation
+        let exampleTranslationHtml = currentQuizData[i]?.exampleTranslation
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Example translated:</div>
                 <div class="after__item-row-value">${currentQuizData[i].exampleTranslation}</div>
             </div>`
             : "";
 
-        let definitionHtml = currentQuizData[i].definition
+        let definitionHtml = currentQuizData[i]?.definition
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Definition:</div>
                 <div class="after__item-row-value">${currentQuizData[i].definition}</div>
             </div>`
             : "";
 
-        let noteHtml = currentQuizData[i].note
+        let noteHtml = currentQuizData[i]?.note
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Note:</div>
                 <div class="after__item-row-value">${currentQuizData[i].note}</div>
             </div>`
             : "";
 
-        let pronunciationHtml = currentQuizData[i].pronunciation
+        let pronunciationHtml = currentQuizData[i]?.pronunciation
             ? `<div class="after__item-row">
                 <div class="after__item-row-title">Pronunciation / Transliteration:</div>
                 <div class="after__item-row-value">${currentQuizData[i].pronunciation}</div>
@@ -74,7 +72,7 @@ function returnAfterHtml(currentQuizData, answersArr) {
                     <div class="after__item-number">${i + 1}</div>
                     <div class="after__item-row">
                         <div class="after__item-row-title">Question:</div>
-                        <div class="after__item-row-value">How would you translate this? — <span>${
+                        <div class="after__item-row-value">How would you translate this? — <span class="after__item-word">${
                             currentQuizData[i].word
                         }</span></div>
                     </div>

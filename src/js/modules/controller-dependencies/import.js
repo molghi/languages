@@ -103,7 +103,7 @@ function addFromImported(dataArr) {
             counter += 1;
             Logic.getWordsState().push(obj); // pushing to state
         } else {
-            // means the state already has this word in this lang -- so I do nothing, ignore
+            // means the state already has this word in this lang -- so I do not push it
         }
     });
 

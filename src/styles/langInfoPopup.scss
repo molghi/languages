@@ -33,6 +33,10 @@ span[data-lang] {
     span {
         opacity: 0.5;
     }
+
+    @media (max-width: #{initial.$md2}px) {
+        display: none;
+    }
 }
 
 .lang-info__title {
